@@ -1,0 +1,16 @@
+{
+  "extends": "@tsconfig/node14/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "outDir": "./dist",
+    "allowJs": true,
+
+    "sourceMap": true,
+    "declaration": true,
+
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src"]
+}

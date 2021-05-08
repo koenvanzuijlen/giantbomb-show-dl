@@ -1,0 +1,36 @@
+{
+  "name": "giantbomb-show-dl",
+  "version": "1.0.0",
+  "description": "Node CLI to download GiantBomb shows through the official API",
+  "main": "index.js",
+  "author": "Koen van Zuijlen",
+  "license": "MIT",
+  "engines": {
+    "node": "16.1.0"
+  },
+  "volta": {
+    "node": "16.1.0",
+    "yarn": "1.22.10"
+  },
+  "bin": "./dist/bin.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "commander": "^7.2.0",
+    "got": "^11.8.2"
+  },
+  "devDependencies": {
+    "@tsconfig/node14": "^1.0.0",
+    "@types/node": "^15.0.2",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.2.1",
+    "typescript": "^4.2.4"
+  },
+  "resolutions": {
+    "giantbomb-show-dl": "portal:/home/preau/projects/giantbomb-show-dl"
+  }
+}
