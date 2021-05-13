@@ -41,14 +41,25 @@ const main = async () => {
     fs.mkdirSync(showDirectory);
   }
 
-  // Download the show poser image if available
+  // Download the show poster image if available
   if (show?.image?.original_url) {
     const imageExtension = path.parse(show.image.original_url).ext;
     const imageTargetPath = path.join(showDirectory, `poster${imageExtension}`);
-    // if (!fs.existsSync(imageTargetPath)) {
-    console.log(`Downloading show image to: ${chalk.green(imageTargetPath)}`);
-    await api.downloadFile(show.image.original_url, imageTargetPath);
-    // }
+    if (!fs.existsSync(imageTargetPath)) {
+      console.log(`Downloading show image to: ${chalk.green(imageTargetPath)}`);
+      await api.downloadFile(show.image.original_url, imageTargetPath);
+    }
+  }
+
+  for (const video of await api.getVideos(show)) {
+    let urlToDownload = video.hd_url || video.high_url || video.low_url;
+    if (video.hd_url) {
+      //Check for 8k version
+      console.log("HD CHECK");
+    }
+
+    console.log(video.name);
+    console.log(urlToDownload);
   }
 };
 

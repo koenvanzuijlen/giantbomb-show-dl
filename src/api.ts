@@ -6,6 +6,17 @@ import { cyan, green, magenta, yellow, red } from "chalk";
 const BASE_URL = "https://www.giantbomb.com/api/";
 const MS_BETWEEN_REQUEST = 1100;
 const MAX_PAGES = 5;
+const PAGE_LIMIT = 100;
+
+const SHOW_FIELD_LIST = ["id", "title", "image"];
+const VIDEO_FIELD_LIST = [
+  "id",
+  "name",
+  "publish_date",
+  "low_url",
+  "high_url",
+  "hd_url",
+];
 
 type Show = {
   id: number;
@@ -15,8 +26,21 @@ type Show = {
   };
 };
 
+type Video = {
+  id: number;
+  name: string;
+  publish_date: string;
+  low_url?: string;
+  high_url?: string;
+  hd_url?: string;
+};
+
 type ShowsResponse = {
   results: Show[];
+};
+
+type VideosResponse = {
+  results: Video[];
 };
 
 export default class GiantBombAPI {
@@ -85,7 +109,8 @@ export default class GiantBombAPI {
     try {
       while (!show && page < MAX_PAGES) {
         const response = await this.request<ShowsResponse>("video_shows", {
-          field_list: "id,title,image",
+          offset: page * PAGE_LIMIT,
+          field_list: SHOW_FIELD_LIST.join(","),
         });
         show = response.results.find((show) => show.title === showName);
         page++;
@@ -106,5 +131,40 @@ export default class GiantBombAPI {
       throw error;
     }
     return show;
+  }
+
+  async getVideos(show: Show) {
+    console.log(`Retrieving videos for show: ${cyan(show.title)})`);
+    let page: number = 0;
+    let foundVideos: boolean = true;
+    let videos: Video[] = [];
+
+    try {
+      while (foundVideos && page < MAX_PAGES) {
+        const response = await this.request<VideosResponse>("videos", {
+          offset: page * PAGE_LIMIT,
+          sort: "publish_date:asc",
+          filter: `video_show:${show.id}`,
+          field_list: VIDEO_FIELD_LIST.join(","),
+        });
+        foundVideos = response.results.length > 0;
+        videos = [...videos, ...response.results];
+        page++;
+      }
+    } catch (error) {
+      console.error(
+        `Retrieving videos from Giant Bomb failed: ${red(error.message)}`
+      );
+      throw error;
+    }
+
+    if (videos.length) {
+      console.log(
+        `Found ${magenta(videos.length)} videos for show: ${cyan(show.title)}`
+      );
+    } else {
+      console.log(`No videos found for ${cyan(show.title)}!`);
+    }
+    return videos;
   }
 }
