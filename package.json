@@ -20,7 +20,8 @@
   "dependencies": {
     "chalk": "^4.1.1",
     "commander": "^7.2.0",
-    "got": "^11.8.2"
+    "got": "^11.8.2",
+    "sanitize-filename": "^1.6.3"
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.0",

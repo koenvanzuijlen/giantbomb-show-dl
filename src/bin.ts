@@ -2,9 +2,11 @@
 import fs from "fs";
 import path from "path";
 import { Command } from "commander";
-import chalk from "chalk";
+import { cyan, green, magenta, red } from "chalk";
 
 import GiantBombAPI from "./api";
+import DownloadTracker from "./downloadtracker";
+import sanitize from "sanitize-filename";
 
 const program = new Command()
   .requiredOption(
@@ -23,7 +25,7 @@ const program = new Command()
 const main = async () => {
   const directory = path.resolve(program.dir);
   if (!fs.existsSync(directory)) {
-    console.error(chalk.red("Passed directory not found!"));
+    console.error(red("Passed directory not found!"));
     process.exit(0);
   }
 
@@ -40,27 +42,65 @@ const main = async () => {
   if (!fs.existsSync(showDirectory)) {
     fs.mkdirSync(showDirectory);
   }
+  const tracker = new DownloadTracker(showDirectory);
 
   // Download the show poster image if available
   if (show?.image?.original_url) {
     const imageExtension = path.parse(show.image.original_url).ext;
     const imageTargetPath = path.join(showDirectory, `poster${imageExtension}`);
     if (!fs.existsSync(imageTargetPath)) {
-      console.log(`Downloading show image to: ${chalk.green(imageTargetPath)}`);
+      console.log(`Downloading show image to: ${green(imageTargetPath)}`);
       await api.downloadFile(show.image.original_url, imageTargetPath);
     }
   }
 
+  let counter = 0;
   for (const video of await api.getVideos(show)) {
+    if (tracker.isDownloaded(video.id)) {
+      console.log(
+        `Skipping episode ${magenta(video.name)}, already downloaded previously`
+      );
+      continue;
+    }
     let urlToDownload = video.hd_url || video.high_url || video.low_url;
-    if (video.hd_url) {
-      //Check for 8k version
-      console.log("HD CHECK");
+    if (!urlToDownload) {
+      continue;
     }
 
-    console.log(video.name);
-    console.log(urlToDownload);
+    const videoFilename = path.join(
+      showDirectory,
+      sanitize(
+        `${video.publish_date.substring(0, 10)} - ${video.name}${path.extname(
+          urlToDownload
+        )}`,
+        { replacement: "_" }
+      )
+    );
+    console.log(
+      `Downloading episode ${magenta(video.name)} to: ${green(videoFilename)}`
+    );
+
+    if (video.hd_url) {
+      try {
+        // Check if 8k version exists, as it's not returned from the API
+        const highestUrl = video.hd_url.replace("_4000.", "_8000.");
+        await api.checkIfExists(highestUrl);
+        urlToDownload = highestUrl;
+      } catch (err) {
+        // Ignore
+      }
+    }
+
+    try {
+      await api.downloadFile(urlToDownload, videoFilename);
+      tracker.markDownloaded(video.id);
+    } catch (err) {
+      console.log(red(`Failed to download episode ${magenta(video.name)}`));
+    }
   }
+
+  console.log(`Done downloading videos for ${cyan(show.title)}!`);
+  console.log(`If any downloads failed rerun the command to retry them`);
 };
 
 main();

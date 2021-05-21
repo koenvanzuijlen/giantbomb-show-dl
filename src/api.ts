@@ -1,7 +1,7 @@
 import fs from "fs";
 import { pipeline } from "stream/promises";
-import got from "got";
-import { cyan, green, magenta, yellow, red } from "chalk";
+import got, { Response } from "got";
+import { cyan, green, magenta, red } from "chalk";
 
 const BASE_URL = "https://www.giantbomb.com/api/";
 const MS_BETWEEN_REQUEST = 1100;
@@ -52,15 +52,18 @@ export default class GiantBombAPI {
     this.apiKey = apiKey;
   }
 
-  private async request<T>(
-    endpoint: string,
-    parameters: { [key: string]: string | number }
-  ): Promise<T> {
-    // Make sure we are not rate limited
+  private async rateLimit() {
     if (this.lastCall > Date.now() - MS_BETWEEN_REQUEST) {
       await new Promise((r) => setTimeout(r, MS_BETWEEN_REQUEST));
     }
     this.lastCall = Date.now();
+  }
+
+  private async request<T>(
+    endpoint: string,
+    parameters: { [key: string]: string | number }
+  ): Promise<T> {
+    await this.rateLimit();
 
     return await got(`${BASE_URL}${endpoint}/`, {
       searchParams: {
@@ -71,7 +74,19 @@ export default class GiantBombAPI {
     }).json<T>();
   }
 
+  async checkIfExists(url: string): Promise<Response> {
+    await this.rateLimit();
+
+    return await got.head(url, {
+      searchParams: {
+        api_key: this.apiKey,
+      },
+    });
+  }
+
   async downloadFile(url: string, targetPath: string): Promise<boolean> {
+    await this.rateLimit();
+
     try {
       await pipeline(
         got
@@ -134,7 +149,7 @@ export default class GiantBombAPI {
   }
 
   async getVideos(show: Show) {
-    console.log(`Retrieving videos for show: ${cyan(show.title)})`);
+    console.log(`Retrieving videos for show: ${cyan(show.title)}`);
     let page: number = 0;
     let foundVideos: boolean = true;
     let videos: Video[] = [];

@@ -45,6 +45,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-config-prettier", "virtual:9ee51df4e6266806df3fce4bbfa64e4754bdd1455e81e9b391cb39c4865f231910571cf81a36d93ef593beefca6a15fdd6c5d2da856d8957ca241f2d3a6eda4a#npm:8.3.0"],
             ["got", "npm:11.8.2"],
             ["prettier", "npm:2.2.1"],
+            ["sanitize-filename", "npm:1.6.3"],
             ["typescript", "patch:typescript@npm%3A4.2.4#builtin<compat/typescript>::version=4.2.4&hash=a45b0e"]
           ],
           "linkType": "SOFT",
@@ -803,6 +804,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-config-prettier", "virtual:9ee51df4e6266806df3fce4bbfa64e4754bdd1455e81e9b391cb39c4865f231910571cf81a36d93ef593beefca6a15fdd6c5d2da856d8957ca241f2d3a6eda4a#npm:8.3.0"],
             ["got", "npm:11.8.2"],
             ["prettier", "npm:2.2.1"],
+            ["sanitize-filename", "npm:1.6.3"],
             ["typescript", "patch:typescript@npm%3A4.2.4#builtin<compat/typescript>::version=4.2.4&hash=a45b0e"]
           ],
           "linkType": "SOFT",
@@ -1341,6 +1343,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["sanitize-filename", [
+        ["npm:1.6.3", {
+          "packageLocation": "./.yarn/cache/sanitize-filename-npm-1.6.3-cb83b2c2aa-3e15159360.zip/node_modules/sanitize-filename/",
+          "packageDependencies": [
+            ["sanitize-filename", "npm:1.6.3"],
+            ["truncate-utf8-bytes", "npm:1.0.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["semver", [
         ["npm:7.3.5", {
           "packageLocation": "./.yarn/cache/semver-npm-7.3.5-618cf5db6a-c53624ddf4.zip/node_modules/semver/",
@@ -1464,6 +1476,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["truncate-utf8-bytes", [
+        ["npm:1.0.2", {
+          "packageLocation": "./.yarn/cache/truncate-utf8-bytes-npm-1.0.2-ed694c53b0-208b1197a1.zip/node_modules/truncate-utf8-bytes/",
+          "packageDependencies": [
+            ["truncate-utf8-bytes", "npm:1.0.2"],
+            ["utf8-byte-length", "npm:1.0.4"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["type-check", [
         ["npm:0.4.0", {
           "packageLocation": "./.yarn/cache/type-check-npm-0.4.0-60565800ce-6c2e1ce339.zip/node_modules/type-check/",
@@ -1505,6 +1527,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["uri-js", "npm:4.4.1"],
             ["punycode", "npm:2.1.1"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["utf8-byte-length", [
+        ["npm:1.0.4", {
+          "packageLocation": "./.yarn/cache/utf8-byte-length-npm-1.0.4-cf13f06124-df2466d1c9.zip/node_modules/utf8-byte-length/",
+          "packageDependencies": [
+            ["utf8-byte-length", "npm:1.0.4"]
           ],
           "linkType": "HARD",
         }]
