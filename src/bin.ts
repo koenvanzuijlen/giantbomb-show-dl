@@ -54,7 +54,6 @@ const main = async () => {
     }
   }
 
-  let counter = 0;
   for (const video of await api.getVideos(show)) {
     if (tracker.isDownloaded(video.id)) {
       console.log(
@@ -81,21 +80,17 @@ const main = async () => {
     );
 
     if (video.hd_url) {
-      try {
-        // Check if 8k version exists, as it's not returned from the API
-        const highestUrl = video.hd_url.replace("_4000.", "_8000.");
-        await api.checkIfExists(highestUrl);
+      // Check if 8k version exists, as it's not returned from the API
+      const highestUrl = video.hd_url.replace("_4000.", "_8000.");
+      const highestUrlExists = await api.checkIfExists(highestUrl);
+      if (highestUrlExists) {
         urlToDownload = highestUrl;
-      } catch (err) {
-        // Ignore
       }
     }
 
-    try {
-      await api.downloadFile(urlToDownload, videoFilename);
+    const success = await api.downloadFile(urlToDownload, videoFilename);
+    if (success) {
       tracker.markDownloaded(video.id);
-    } catch (err) {
-      console.log(red(`Failed to download episode ${magenta(video.name)}`));
     }
   }
 

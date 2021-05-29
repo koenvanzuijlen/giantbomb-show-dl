@@ -74,14 +74,19 @@ export default class GiantBombAPI {
     }).json<T>();
   }
 
-  async checkIfExists(url: string): Promise<Response> {
+  async checkIfExists(url: string): Promise<boolean> {
     await this.rateLimit();
 
-    return await got.head(url, {
-      searchParams: {
-        api_key: this.apiKey,
-      },
-    });
+    try {
+      await got.head(url, {
+        searchParams: {
+          api_key: this.apiKey,
+        },
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   async downloadFile(url: string, targetPath: string): Promise<boolean> {
