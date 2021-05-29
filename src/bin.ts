@@ -3,10 +3,9 @@ import fs from "fs";
 import path from "path";
 import { Command } from "commander";
 import { cyan, green, magenta, red } from "chalk";
-
+import sanitize from "sanitize-filename";
 import GiantBombAPI from "./api";
 import DownloadTracker from "./downloadtracker";
-import sanitize from "sanitize-filename";
 
 const program = new Command()
   .requiredOption(

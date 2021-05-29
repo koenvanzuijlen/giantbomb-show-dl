@@ -1,6 +1,6 @@
 import fs from "fs";
 import { pipeline } from "stream/promises";
-import got, { Response } from "got";
+import got from "got";
 import { cyan, green, magenta, red } from "chalk";
 
 const BASE_URL = "https://www.giantbomb.com/api/";

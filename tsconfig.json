@@ -5,9 +5,6 @@
     "outDir": "./dist",
     "allowJs": true,
 
-    "sourceMap": true,
-    "declaration": true,
-
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true

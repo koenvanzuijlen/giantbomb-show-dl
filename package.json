@@ -1,10 +1,10 @@
 {
   "name": "giantbomb-show-dl",
   "version": "1.0.0",
-  "description": "Node CLI to download GiantBomb shows through the official API",
-  "main": "index.js",
+  "description": "Node CLI tool to download GiantBomb shows through the official API",
   "author": "Koen van Zuijlen",
   "license": "MIT",
+  "bin": "./dist/bin.js",
   "engines": {
     "node": "16.1.0"
   },
@@ -12,9 +12,8 @@
     "node": "16.1.0",
     "yarn": "1.22.10"
   },
-  "bin": "./dist/bin.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build",
     "watch": "tsc --watch"
   },
   "dependencies": {
@@ -25,7 +24,7 @@
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.0",
-    "@types/node": "^15.0.2",
+    "@types/node": "^15.6.1",
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
     "prettier": "^2.2.1",
