@@ -1,19 +1,21 @@
 #!/usr/bin/env node
 import fs from "fs";
 import path from "path";
+
 import { Command } from "commander";
-import { cyan, green, magenta, red } from "chalk";
 import sanitize from "sanitize-filename";
+
 import GiantBombAPI from "./api";
 import DownloadTracker from "./downloadtracker";
+import logger from "./logger";
 
 const program = new Command()
-  .requiredOption(
+  .option(
     "--api_key <input>",
     "Personal Giant Bomb API key, retrieved from https://www.giantbomb.com/api/"
   )
-  .requiredOption("--show <input>", "Giant Bomb show name")
-  .requiredOption(
+  .option("--show <input>", "Giant Bomb show name")
+  .option(
     "--dir <input>",
     "Directory where shows should be saved, this tool will automatically make a subdirectory for each show"
   )
@@ -21,11 +23,24 @@ const program = new Command()
   .parse()
   .opts();
 
-const main = async () => {
+const main = async (): Promise<void> => {
+  // Check if all required options are present
+  const missingOptions: string[] = [];
+  for (const requiredOption of ["api_key", "show", "dir"]) {
+    if (!program[requiredOption]) {
+      missingOptions.push(requiredOption);
+    }
+  }
+  if (missingOptions.length) {
+    logger.errorOptionsMissing(missingOptions);
+    process.exit();
+  }
+
+  // Check if the passed directory exists
   const directory = path.resolve(program.dir);
   if (!fs.existsSync(directory)) {
-    console.error(red("Passed directory not found!"));
-    process.exit(0);
+    logger.errorDirectoryNotFound(directory);
+    process.exit(1);
   }
 
   const api = new GiantBombAPI(program.api_key);
@@ -33,7 +48,7 @@ const main = async () => {
   // Retrieve show data
   const show = await api.getShowInfo(program.show);
   if (!show) {
-    process.exit(0);
+    process.exit(1);
   }
 
   // Create directory for the show if it does not exist yet
@@ -48,16 +63,26 @@ const main = async () => {
     const imageExtension = path.parse(show.image.original_url).ext;
     const imageTargetPath = path.join(showDirectory, `poster${imageExtension}`);
     if (!fs.existsSync(imageTargetPath)) {
-      console.log(`Downloading show image to: ${green(imageTargetPath)}`);
+      logger.posterDownload(`poster${imageExtension}`);
       await api.downloadFile(show.image.original_url, imageTargetPath);
     }
   }
 
-  for (const video of await api.getVideos(show)) {
+  const videos = await api.getVideos(show);
+  if (videos === null) {
+    process.exit(1);
+  }
+
+  const counts = {
+    downloaded: 0,
+    skipped: 0,
+    failed: 0,
+  };
+
+  for (const video of videos.slice(0, 1)) {
     if (tracker.isDownloaded(video.id)) {
-      console.log(
-        `Skipping episode ${magenta(video.name)}, already downloaded previously`
-      );
+      counts.skipped++;
+      logger.episodeSkip(video.name);
       continue;
     }
     let urlToDownload = video.hd_url || video.high_url || video.low_url;
@@ -65,18 +90,13 @@ const main = async () => {
       continue;
     }
 
-    const videoFilename = path.join(
-      showDirectory,
-      sanitize(
-        `${video.publish_date.substring(0, 10)} - ${video.name}${path.extname(
-          urlToDownload
-        )}`,
-        { replacement: "_" }
-      )
+    const videoFilename = sanitize(
+      `${video.publish_date.substring(0, 10)} - ${video.name}${path.extname(
+        urlToDownload
+      )}`,
+      { replacement: "_" }
     );
-    console.log(
-      `Downloading episode ${magenta(video.name)} to: ${green(videoFilename)}`
-    );
+    logger.episodeDownload(video.name, videoFilename);
 
     if (video.hd_url) {
       // Check if 8k version exists, as it's not returned from the API
@@ -87,14 +107,19 @@ const main = async () => {
       }
     }
 
-    const success = await api.downloadFile(urlToDownload, videoFilename);
+    const success = await api.downloadFile(
+      urlToDownload,
+      path.join(showDirectory, videoFilename)
+    );
     if (success) {
+      counts.downloaded++;
       tracker.markDownloaded(video.id);
+    } else {
+      counts.failed++;
     }
   }
 
-  console.log(`Done downloading videos for ${cyan(show.title)}!`);
-  console.log(`If any downloads failed rerun the command to retry them`);
+  logger.showComplete(show.title, counts);
 };
 
 main();

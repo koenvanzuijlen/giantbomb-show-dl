@@ -1,7 +1,9 @@
 import fs from "fs";
 import { pipeline } from "stream/promises";
+
 import got from "got";
-import { cyan, green, magenta, red } from "chalk";
+
+import logger from "./logger";
 
 const BASE_URL = "https://www.giantbomb.com/api/";
 const MS_BETWEEN_REQUEST = 1100;
@@ -36,7 +38,7 @@ type Video = {
 };
 
 type ShowsResponse = {
-  results: Show[];
+  results?: Show[];
 };
 
 type VideosResponse = {
@@ -101,28 +103,20 @@ export default class GiantBombAPI {
             },
           })
           .on("downloadProgress", ({ percent, transferred, total }) => {
-            const tenthsDone = Math.floor(percent * 10);
-            percent = Math.floor(percent * 100);
-            process.stdout.write(
-              `\r[${green(".".repeat(tenthsDone))}${" ".repeat(
-                10 - tenthsDone
-              )}] ${green(`${percent}%`)} (${magenta(transferred)} / ${magenta(
-                total
-              )} bytes)`
-            );
+            logger.downloadProgress(percent, transferred, total);
           }),
         fs.createWriteStream(targetPath)
       );
       process.stdout.write("\n");
       return true;
     } catch (error) {
-      console.error(`Download failed: ${red(error.message)}`);
+      logger.errorDownloadFailed(error);
       return false;
     }
   }
 
   async getShowInfo(showName: string): Promise<Show | undefined> {
-    console.log(`Retrieving Giant Bomb show information for ${cyan(showName)}`);
+    logger.showRetrieve(showName);
     let show: Show | undefined;
     let page: number = 0;
 
@@ -132,29 +126,24 @@ export default class GiantBombAPI {
           offset: page * PAGE_LIMIT,
           field_list: SHOW_FIELD_LIST.join(","),
         });
+        if (!response.results) {
+          page = MAX_PAGES;
+          continue;
+        }
         show = response.results.find((show) => show.title === showName);
         page++;
       }
       if (!show) {
-        console.error(
-          `Show ${cyan(
-            showName
-          )} not found in show results, is it spelled correctly?`
-        );
-      } else {
-        console.log(`Show ${cyan(showName)} found!`);
+        logger.errorShowNotFound(showName);
       }
     } catch (error) {
-      console.error(
-        `Retrieving shows from Giant Bomb failed: ${red(error.message)}`
-      );
-      throw error;
+      logger.errorShowCallFailed(error);
     }
     return show;
   }
 
-  async getVideos(show: Show) {
-    console.log(`Retrieving videos for show: ${cyan(show.title)}`);
+  async getVideos(show: Show): Promise<Video[] | null> {
+    logger.episodeRetrieve(show.title);
     let page: number = 0;
     let foundVideos: boolean = true;
     let videos: Video[] = [];
@@ -172,19 +161,11 @@ export default class GiantBombAPI {
         page++;
       }
     } catch (error) {
-      console.error(
-        `Retrieving videos from Giant Bomb failed: ${red(error.message)}`
-      );
-      throw error;
+      logger.errorEpisodeCallFailed(error);
+      return null;
     }
 
-    if (videos.length) {
-      console.log(
-        `Found ${magenta(videos.length)} videos for show: ${cyan(show.title)}`
-      );
-    } else {
-      console.log(`No videos found for ${cyan(show.title)}!`);
-    }
+    logger.episodeFound(videos.length);
     return videos;
   }
 }
