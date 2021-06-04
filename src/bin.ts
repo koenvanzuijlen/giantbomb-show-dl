@@ -62,9 +62,15 @@ const main = async (): Promise<void> => {
   if (show?.image?.original_url) {
     const imageExtension = path.parse(show.image.original_url).ext;
     const imageTargetPath = path.join(showDirectory, `poster${imageExtension}`);
-    if (!fs.existsSync(imageTargetPath)) {
+    if (!tracker.isDownloaded("poster")) {
       logger.posterDownload(`poster${imageExtension}`);
-      await api.downloadFile(show.image.original_url, imageTargetPath);
+      const success = await api.downloadFile(
+        show.image.original_url,
+        imageTargetPath
+      );
+      if (success) {
+        tracker.markDownloaded("poster");
+      }
     }
   }
 
