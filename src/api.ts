@@ -48,7 +48,7 @@ type VideosResponse = {
 export default class GiantBombAPI {
   private readonly apiKey: string;
 
-  lastCall: number = 0;
+  lastCall = 0;
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
@@ -118,7 +118,7 @@ export default class GiantBombAPI {
   async getShowInfo(showName: string): Promise<Show | undefined> {
     logger.showRetrieve(showName);
     let show: Show | undefined;
-    let page: number = 0;
+    let page = 0;
 
     try {
       while (!show && page < MAX_PAGES) {
@@ -144,8 +144,8 @@ export default class GiantBombAPI {
 
   async getVideos(show: Show): Promise<Video[] | null> {
     logger.episodeRetrieve(show.title);
-    let page: number = 0;
-    let foundVideos: boolean = true;
+    let page = 0;
+    let foundVideos = true;
     let videos: Video[] = [];
 
     try {

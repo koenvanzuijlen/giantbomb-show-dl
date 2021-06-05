@@ -1,0 +1,4 @@
+{
+  "*.ts": "eslint --cache",
+  "*.{ts,json,md}": "prettier"
+}
