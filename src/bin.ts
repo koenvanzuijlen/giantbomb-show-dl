@@ -19,7 +19,7 @@ const program = new Command()
     "--dir <input>",
     "Directory where shows should be saved, this tool will automatically make a subdirectory for each show"
   )
-  .version("1.0.0")
+  .version("1.0.1")
   .parse()
   .opts();
 
@@ -85,7 +85,7 @@ const main = async (): Promise<void> => {
     failed: 0,
   };
 
-  for (const video of videos.slice(0, 1)) {
+  for (const video of videos) {
     if (tracker.isDownloaded(video.id)) {
       counts.skipped++;
       logger.episodeSkip(video.name);
