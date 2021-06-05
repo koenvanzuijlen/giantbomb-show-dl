@@ -9,6 +9,17 @@ import GiantBombAPI from "./api";
 import DownloadTracker from "./downloadtracker";
 import logger from "./logger";
 
+const QUALITY_LOW = "low";
+const QUALITY_HIGH = "high";
+const QUALITY_HD = "hd";
+const QUALITY_HIGHEST = "highest";
+const QUALITY_OPTIONS = [
+  QUALITY_LOW,
+  QUALITY_HIGH,
+  QUALITY_HD,
+  QUALITY_HIGHEST,
+];
+
 const program = new Command()
   .option(
     "--api_key <input>",
@@ -18,6 +29,13 @@ const program = new Command()
   .option(
     "--dir <input>",
     "Directory where shows should be saved, this tool will automatically make a subdirectory for each show"
+  )
+  .option(
+    "--quality <input>",
+    `Video quality to download, will download lower quality if not available. (options: ${QUALITY_OPTIONS.map(
+      (quality) => `"${quality}"`
+    ).join(", ")})`,
+    "highest"
   )
   .version("1.0.1")
   .parse()
@@ -40,6 +58,12 @@ const main = async (): Promise<void> => {
   const directory = path.resolve(program.dir);
   if (!fs.existsSync(directory)) {
     logger.errorDirectoryNotFound(directory);
+    process.exit(1);
+  }
+
+  // Check if the quality is valid
+  if (!QUALITY_OPTIONS.includes(program.quality)) {
+    logger.errorInvalidQuality(program.quality, QUALITY_OPTIONS);
     process.exit(1);
   }
 
@@ -91,7 +115,13 @@ const main = async (): Promise<void> => {
       logger.episodeSkip(video.name);
       continue;
     }
-    let urlToDownload = video.hd_url || video.high_url || video.low_url;
+    // Get the correct URL for the quality
+    const hdUrl =
+      program.quality !== QUALITY_LOW &&
+      program.quality !== QUALITY_HIGH &&
+      video.hd_url;
+    const highUrl = program.quality !== QUALITY_LOW && video.high_url;
+    let urlToDownload = hdUrl || highUrl || video.low_url;
     if (!urlToDownload) {
       continue;
     }
@@ -104,7 +134,7 @@ const main = async (): Promise<void> => {
     );
     logger.episodeDownload(video.name, videoFilename);
 
-    if (video.hd_url) {
+    if (program.quality === QUALITY_HIGHEST && video.hd_url === urlToDownload) {
       // Check if 8k version exists, as it's not returned from the API
       const highestUrl = video.hd_url.replace("_4000.", "_8000.");
       const highestUrlExists = await api.checkIfExists(highestUrl);

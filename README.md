@@ -1,6 +1,6 @@
 # giantbomb-show-dl
 
-Command line tool to download full Giant Bomb shows in their highest quality.
+Command line tool to download full Giant Bomb shows with a single command.
 
 ## How to
 
@@ -23,25 +23,26 @@ giantbomb-show-dl --api_key <YOUR_API_KEY> --show "Unprofessional Fridays" --dir
 
 ## Options
 
-| Option      | Required | Description                                                                              |
-| ----------- | -------- | ---------------------------------------------------------------------------------------- |
-| `--api_key` | ✅       | Your Giant Bomb API key, can be found at https://www.giantbomb.com/api/.                 |
-| `--show`    | ✅       | Name of the Giant Bomb show to download, must be an exact match.                         |
-| `--dir`     | ✅       | Directory the show should be downloaded to, it will create a subdirectory for each show. |
+| Option      | Required | Description                                                                                                                                                        |
+| ----------- | :------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--api_key` |    ✅    | Your Giant Bomb API key, can be found at https://www.giantbomb.com/api/.                                                                                           |
+| `--show`    |    ✅    | Name of the Giant Bomb show to download, must be an exact match.                                                                                                   |
+| `--dir`     |    ✅    | Directory the show should be downloaded to, it will create a subdirectory for each show.                                                                           |
+| `--quality` |    ❌    | Quality to download videos in, will fall back to lower quality if selected is not available. Defaults to `highest`. Options are `low`, `high`, `hd` and `highest`. |
 
 ## Features
 
 ### Highest quality
 
-Will always download the highest quality available for each video.
+Will always download the highest quality available for each video. Normally the API does not return 8k versions of videos. but this tool checks if they are available and downloads them when the quality `highest` is used.
+
+### Show poster download
+
+Automatically download the poster image for the selected show. This can be used in libraries like Plex.
 
 ### Rate limiting
 
-This tool will autmatically rate limit the request to not exceed Giant Bomb API usage guidelines.
-
-### Show poster
-
-Automatically download the poster image for the selected show. This can be used in libraries like Plex.
+This tool will autmatically rate limit API requests to not exceed Giant Bomb API usage guidelines.
 
 ### Download tracking
 

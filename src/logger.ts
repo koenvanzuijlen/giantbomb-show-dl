@@ -75,6 +75,17 @@ const errorDirectoryNotFound = (directory: string): void => {
   console.error(`${red("Error:")} Directory ${magenta(directory)} not found`);
 };
 
+const errorInvalidQuality = (
+  quality: string,
+  allowedValues: string[]
+): void => {
+  console.error(
+    `${red("Error:")} Quality ${cyan(quality)} is not valid, options are ${cyan(
+      allowedValues.join(", ")
+    )}`
+  );
+};
+
 const errorShowNotFound = (showName: string): void => {
   console.error(
     `${red("Error:")} Show ${cyan(
@@ -113,6 +124,7 @@ export default {
   downloadProgress,
   errorOptionsMissing,
   errorDirectoryNotFound,
+  errorInvalidQuality,
   errorShowNotFound,
   errorShowCallFailed,
   errorEpisodeCallFailed,
