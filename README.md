@@ -10,6 +10,17 @@ The easiest way to run this tool is to use NPX, which requires [Node.js](https:/
 npx giantbomb-show-dl --api_key <YOUR_API_KEY> --show "Unprofessional Fridays" --dir "~/Downloads/GiantBomb"
 ```
 
+It's also possible to install the tool globally using either [Node.js](https://nodejs.org/) or [Yarn](https://yarnpkg.com/). After that the binary can be used in your shell.
+
+```shell
+# Node.JS
+npm install -g giantbomb-show-dl
+# Yarn
+yarn global add giantbomb-show-dl
+
+giantbomb-show-dl --api_key <YOUR_API_KEY> --show "Unprofessional Fridays" --dir "~/Downloads/GiantBomb"
+```
+
 ## Options
 
 | Option      | Required | Description                                                                              |
