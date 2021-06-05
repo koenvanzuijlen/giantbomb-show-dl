@@ -37,7 +37,7 @@ const program = new Command()
     ).join(", ")})`,
     "highest"
   )
-  .version("1.0.1")
+  .version("1.1.1")
   .parse()
   .opts();
 
