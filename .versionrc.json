@@ -1,0 +1,9 @@
+{
+  "bumpFiles": [
+    "package.json",
+    {
+      "filename": "src/bin.ts",
+      "updater": "scripts/commander-version-updater.js"
+    }
+  ]
+}
