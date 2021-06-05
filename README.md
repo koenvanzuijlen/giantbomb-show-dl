@@ -35,6 +35,10 @@ giantbomb-show-dl --api_key <YOUR_API_KEY> --show "Unprofessional Fridays" --dir
 
 Will always download the highest quality available for each video.
 
+### Rate limiting
+
+This tool will autmatically rate limit the request to not exceed Giant Bomb API usage guidelines.
+
 ### Show poster
 
 Automatically download the poster image for the selected show. This can be used in libraries like Plex.
