@@ -4,6 +4,10 @@
   "description": "Node CLI tool to download GiantBomb shows through the official API",
   "author": "Koen van Zuijlen",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koenvanzuijlen/giantbomb-show-dl.git"
+  },
   "bin": "./dist/bin.js",
   "files": [
     "dist"
