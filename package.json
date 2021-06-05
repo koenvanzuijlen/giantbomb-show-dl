@@ -5,6 +5,9 @@
   "author": "Koen van Zuijlen",
   "license": "MIT",
   "bin": "./dist/bin.js",
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": "16.1.0"
   },
@@ -13,6 +16,7 @@
     "yarn": "1.22.10"
   },
   "scripts": {
+    "prepack": "npm run build",
     "build": "tsc --build",
     "watch": "tsc --watch"
   },
