@@ -157,6 +157,8 @@ const main = async (): Promise<void> => {
     const highUrl = program.quality !== QUALITY_LOW && video.high_url;
     let urlToDownload = hdUrl || highUrl || video.low_url;
     if (!urlToDownload) {
+      counts.skipped++;
+      logger.episodeSkipNoURL(video.name, program.quality);
       continue;
     }
 

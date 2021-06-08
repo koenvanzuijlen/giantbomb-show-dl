@@ -73,6 +73,14 @@ const episodeSkipAfterDate = (
   );
 };
 
+const episodeSkipNoURL = (episodeName: string, quality: string): void => {
+  console.log(
+    `Skipping ${cyan(episodeName)}, no URL found for quality ${magenta(
+      quality
+    )} or lower. Try with a higher quality.`
+  );
+};
+
 const downloadProgress = (
   percent: number,
   transferred: number,
@@ -90,7 +98,7 @@ const downloadProgress = (
 
 const errorOptionsMissing = (missingOptions: string[]): void => {
   console.error(
-    `${red("Error:")} Required option(s) ${cyan(
+    `${red("Error:")} Required option(s) ${magenta(
       missingOptions.map((option) => `--${option}`).join(", ")
     )} not specified`
   );
@@ -105,9 +113,9 @@ const errorInvalidQuality = (
   allowedValues: string[]
 ): void => {
   console.error(
-    `${red("Error:")} Quality ${cyan(quality)} is not valid, options are ${cyan(
-      allowedValues.join(", ")
-    )}`
+    `${red("Error:")} Quality ${magenta(
+      quality
+    )} is not valid, options are ${cyan(allowedValues.join(", "))}`
   );
 };
 
@@ -148,6 +156,7 @@ export default {
   episodeSkipDownloaded,
   episodeSkipBeforeDate,
   episodeSkipAfterDate,
+  episodeSkipNoURL,
   downloadProgress,
   errorOptionsMissing,
   errorDirectoryNotFound,
