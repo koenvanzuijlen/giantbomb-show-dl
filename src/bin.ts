@@ -46,7 +46,7 @@ const program = new Command()
     "--to_date <input>",
     "If added videos from after this date will not be downloaded. Formatted as YYYY-MM-DD."
   )
-  .version("1.1.1")
+  .version("1.2.0")
   .parse()
   .opts();
 
