@@ -31,6 +31,7 @@
   "dependencies": {
     "chalk": "~4.1.1",
     "commander": "~7.2.0",
+    "dayjs": "~1.10.5",
     "got": "~11.8.2",
     "sanitize-filename": "~1.6.3"
   },

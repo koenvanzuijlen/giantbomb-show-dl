@@ -23,12 +23,14 @@ giantbomb-show-dl --api_key <YOUR_API_KEY> --show "Unprofessional Fridays" --dir
 
 ## Options
 
-| Option      | Required | Description                                                                                                                                                        |
-| ----------- | :------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--api_key` |    ✅    | Your Giant Bomb API key, can be found at https://www.giantbomb.com/api/.                                                                                           |
-| `--show`    |    ✅    | Name of the Giant Bomb show to download, must be an exact match.                                                                                                   |
-| `--dir`     |    ✅    | Directory the show should be downloaded to, it will create a subdirectory for each show.                                                                           |
-| `--quality` |    ❌    | Quality to download videos in, will fall back to lower quality if selected is not available. Defaults to `highest`. Options are `low`, `high`, `hd` and `highest`. |
+| Option        | Required | Description                                                                                                                                                        |
+| ------------- | :------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--api_key`   |    ✅    | Your Giant Bomb API key, can be found at https://www.giantbomb.com/api/.                                                                                           |
+| `--show`      |    ✅    | Name of the Giant Bomb show to download, must be an exact match.                                                                                                   |
+| `--dir`       |    ✅    | Directory the show should be downloaded to, it will create a subdirectory for each show.                                                                           |
+| `--quality`   |    ❌    | Quality to download videos in, will fall back to lower quality if selected is not available. Defaults to `highest`. Options are `low`, `high`, `hd` and `highest`. |
+| `--from_date` |    ❌    | Videos published before this date will not be downloaded. Formatted as `YYYY-MM-DD`.                                                                               |
+| `--to_date`   |    ❌    | Videos published after this date will not be downloaded. Formatted as `YYYY-MM-DD`.                                                                                |
 
 ## Features
 

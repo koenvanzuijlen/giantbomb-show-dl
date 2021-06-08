@@ -1131,6 +1131,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dayjs@npm:^1.10.5":
+  version: 1.10.5
+  resolution: "dayjs@npm:1.10.5"
+  checksum: 11b3a952cdb77959b07318804bd982d1d377581e4752ec478da82b494da1ebb9d82e0539481ab51f90a36e35a268a730034cb6f3cac1b45609755c909329c0a1
+  languageName: node
+  linkType: hard
+
 "debug@npm:^4.0.1, debug@npm:^4.1.1, debug@npm:^4.3.1":
   version: 4.3.2
   resolution: "debug@npm:4.3.2"
@@ -1726,6 +1733,7 @@ __metadata:
     "@typescript-eslint/parser": ~4.26.0
     chalk: ~4.1.1
     commander: ~7.2.0
+    dayjs: ^1.10.5
     eslint: ~7.28.0
     eslint-config-prettier: ~8.3.0
     got: ~11.8.2

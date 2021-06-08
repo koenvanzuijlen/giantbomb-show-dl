@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 
 import { Command } from "commander";
+import dayjs from "dayjs";
 import sanitize from "sanitize-filename";
 
 import GiantBombAPI from "./api";
@@ -37,6 +38,14 @@ const program = new Command()
     ).join(", ")})`,
     "highest"
   )
+  .option(
+    "--from_date <input>",
+    "If added videos from before this date will not be downloaded. Formatted as YYYY-MM-DD."
+  )
+  .option(
+    "--to_date <input>",
+    "If added videos from after this date will not be downloaded. Formatted as YYYY-MM-DD."
+  )
   .version("1.1.1")
   .parse()
   .opts();
@@ -65,6 +74,16 @@ const main = async (): Promise<void> => {
   if (!QUALITY_OPTIONS.includes(program.quality)) {
     logger.errorInvalidQuality(program.quality, QUALITY_OPTIONS);
     process.exit(1);
+  }
+
+  // Parse passed dates if any
+  let fromDate,
+    toDate = null;
+  if (program.from_date) {
+    fromDate = dayjs(program.from_date, "YYYY-MM-DD");
+  }
+  if (program.to_date) {
+    toDate = dayjs(program.to_date, "YYYY-MM-DD");
   }
 
   const api = new GiantBombAPI(program.api_key);
@@ -110,11 +129,26 @@ const main = async (): Promise<void> => {
   };
 
   for (const video of videos) {
-    if (tracker.isDownloaded(video.id)) {
+    const publishDate = dayjs(video.publish_date, "YYYY-MM-DD");
+
+    if (fromDate && publishDate.isBefore(fromDate, "day")) {
       counts.skipped++;
-      logger.episodeSkip(video.name);
+      logger.episodeSkipBeforeDate(video.name, publishDate, fromDate);
       continue;
     }
+
+    if (toDate && publishDate.isAfter(toDate, "day")) {
+      counts.skipped++;
+      logger.episodeSkipAfterDate(video.name, publishDate, toDate);
+      continue;
+    }
+
+    if (tracker.isDownloaded(video.id)) {
+      counts.skipped++;
+      logger.episodeSkipDownloaded(video.name);
+      continue;
+    }
+
     // Get the correct URL for the quality
     const hdUrl =
       program.quality !== QUALITY_LOW &&

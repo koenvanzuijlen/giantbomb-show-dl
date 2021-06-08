@@ -1,4 +1,5 @@
 import { cyan, green, magenta, red, yellow } from "chalk";
+import type { Dayjs } from "dayjs";
 
 const showRetrieve = (showName: string): void => {
   console.log(`Retrieving ${cyan(showName)} information from Giant Bomb`);
@@ -44,8 +45,32 @@ const episodeDownload = (episodeName: string, filename: string): void => {
   console.log(`Downloading ${cyan(episodeName)} to: ${magenta(filename)}`);
 };
 
-const episodeSkip = (episodeName: string): void => {
+const episodeSkipDownloaded = (episodeName: string): void => {
   console.log(`Skipping ${cyan(episodeName)}, already downloaded`);
+};
+
+const episodeSkipBeforeDate = (
+  episodeName: string,
+  publishDate: Dayjs,
+  fromDate: Dayjs
+): void => {
+  console.log(
+    `Skipping ${cyan(episodeName)}, published on ${cyan(
+      publishDate.format("YYYY-MM-DD")
+    )} ${magenta(`(--from_date: ${fromDate.format("YYYY-MM-DD")})`)}`
+  );
+};
+
+const episodeSkipAfterDate = (
+  episodeName: string,
+  publishDate: Dayjs,
+  toDate: Dayjs
+): void => {
+  console.log(
+    `Skipping ${cyan(episodeName)}, published on ${cyan(
+      publishDate.format("YYYY-MM-DD")
+    )} ${magenta(`(--to_date: ${toDate.format("YYYY-MM-DD")})`)}`
+  );
 };
 
 const downloadProgress = (
@@ -120,7 +145,9 @@ export default {
   episodeRetrieve,
   episodeFound,
   episodeDownload,
-  episodeSkip,
+  episodeSkipDownloaded,
+  episodeSkipBeforeDate,
+  episodeSkipAfterDate,
   downloadProgress,
   errorOptionsMissing,
   errorDirectoryNotFound,
