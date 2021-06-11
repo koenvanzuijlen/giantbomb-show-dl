@@ -5,10 +5,13 @@ import path from "path";
 import { Command } from "commander";
 import dayjs from "dayjs";
 import sanitize from "sanitize-filename";
+import updateNotifier from "update-notifier";
 
 import GiantBombAPI from "./api";
 import DownloadTracker from "./downloadtracker";
 import logger from "./logger";
+
+const CURRENT_VERSION = "1.2.0";
 
 const QUALITY_LOW = "low";
 const QUALITY_HIGH = "high";
@@ -20,6 +23,14 @@ const QUALITY_OPTIONS = [
   QUALITY_HD,
   QUALITY_HIGHEST,
 ];
+
+updateNotifier({
+  pkg: {
+    name: "giantbomb-show-dl",
+    version: CURRENT_VERSION,
+  },
+  shouldNotifyInNpmScript: true,
+}).notify();
 
 const program = new Command()
   .option(
@@ -46,7 +57,7 @@ const program = new Command()
     "--to_date <input>",
     "If added videos from after this date will not be downloaded. Formatted as YYYY-MM-DD."
   )
-  .version("1.2.0")
+  .version(CURRENT_VERSION)
   .parse()
   .opts();
 
