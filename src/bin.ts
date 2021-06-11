@@ -95,7 +95,10 @@ const main = async (): Promise<void> => {
   }
 
   // Create directory for the show if it does not exist yet
-  const showDirectory = path.join(directory, show.title);
+  const showDirectory = path.join(
+    directory,
+    sanitize(show.title, { replacement: "_" })
+  );
   if (!fs.existsSync(showDirectory)) {
     fs.mkdirSync(showDirectory);
   }
