@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.2.0...v1.3.0) (2021-06-11)
+
+
+### Features
+
+* implement update-notifier ([44de5c7](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/44de5c7362ae96fb38f9eeb1a62a21480044fd2a))
+
+
+### Bug Fixes
+
+* make showname matching case-insensitive ([7553c1d](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/7553c1ddb37fd59510ab6d90697ad207681a882f))
+* sanitize created directory name ([157962f](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/157962f57d690a0ea0626e449c91543f3c57a22e))
+
 ## [1.2.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.1.1...v1.2.0) (2021-06-08)
 
 
