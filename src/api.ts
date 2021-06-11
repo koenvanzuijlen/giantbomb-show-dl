@@ -130,7 +130,9 @@ export default class GiantBombAPI {
           page = MAX_PAGES;
           continue;
         }
-        show = response.results.find((show) => show.title === showName);
+        show = response.results.find(
+          (show) => show.title.toLowerCase() === showName.toLowerCase()
+        );
         page++;
       }
       if (!show) {
