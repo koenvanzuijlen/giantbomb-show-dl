@@ -1,6 +1,10 @@
 import { cyan, green, magenta, red, yellow } from "chalk";
 import type { Dayjs } from "dayjs";
 
+const init = (version: string): void => {
+  console.log(`💣 ${cyan("giantbomb-show-dl")} ${green(version)} 💣`);
+};
+
 const showRetrieve = (showName: string): void => {
   console.log(`Retrieving ${cyan(showName)} information from Giant Bomb`);
 };
@@ -147,6 +151,7 @@ const errorDownloadFailed = (error: Error): void => {
 };
 
 export default {
+  init,
   showRetrieve,
   showComplete,
   posterDownload,

@@ -62,6 +62,8 @@ const program = new Command()
   .opts();
 
 const main = async (): Promise<void> => {
+  logger.init(CURRENT_VERSION);
+
   // Check if all required options are present
   const missingOptions: string[] = [];
   for (const requiredOption of ["api_key", "show", "dir"]) {
