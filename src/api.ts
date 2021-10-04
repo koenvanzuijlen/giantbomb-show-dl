@@ -110,7 +110,7 @@ export default class GiantBombAPI {
       process.stdout.write("\n");
       return true;
     } catch (error) {
-      logger.errorDownloadFailed(error);
+      logger.errorDownloadFailed(error as Error);
       return false;
     }
   }
@@ -139,7 +139,7 @@ export default class GiantBombAPI {
         logger.errorShowNotFound(showName);
       }
     } catch (error) {
-      logger.errorShowCallFailed(error);
+      logger.errorShowCallFailed(error as Error);
     }
     return show;
   }
@@ -163,7 +163,7 @@ export default class GiantBombAPI {
         page++;
       }
     } catch (error) {
-      logger.errorEpisodeCallFailed(error);
+      logger.errorEpisodeCallFailed(error as Error);
       return null;
     }
 
