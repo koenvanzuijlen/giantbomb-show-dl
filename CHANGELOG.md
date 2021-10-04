@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.3.0...v1.4.0) (2021-10-04)
+
+
+### Features
+
+* announce package name and version on start ([1cec8d2](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/1cec8d20a5abd0da0cd4f2bbf0589c8e23e64562))
+
 ## [1.3.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.2.0...v1.3.0) (2021-06-11)
 
 

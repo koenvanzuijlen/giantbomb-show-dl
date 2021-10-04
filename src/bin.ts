@@ -11,7 +11,7 @@ import GiantBombAPI from "./api";
 import DownloadTracker from "./downloadtracker";
 import logger from "./logger";
 
-const CURRENT_VERSION = "1.3.0";
+const CURRENT_VERSION = "1.4.0";
 
 const QUALITY_LOW = "low";
 const QUALITY_HIGH = "high";

@@ -1,6 +1,6 @@
 {
   "name": "giantbomb-show-dl",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Node CLI tool to download GiantBomb shows through the official API",
   "author": "Koen van Zuijlen",
   "license": "MIT",
