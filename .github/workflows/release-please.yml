@@ -12,4 +12,4 @@ jobs:
           release-type: node
           package-name: giantbomb-show-dl
           extra-files: |
-            bin.ts
+            src/bin.ts
