@@ -5,8 +5,7 @@
     "outDir": "./dist",
     "allowJs": true,
 
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
+    "module": "NodeNext",
     "allowSyntheticDefaultImports": true
   },
   "include": ["src"]

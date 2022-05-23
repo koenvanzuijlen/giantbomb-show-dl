@@ -6,9 +6,9 @@ import { Command } from "commander";
 import dayjs from "dayjs";
 import sanitize from "sanitize-filename";
 
-import GiantBombAPI from "./api";
-import DownloadTracker from "./downloadtracker";
-import logger from "./logger";
+import GiantBombAPI from "./api.js";
+import DownloadTracker from "./downloadtracker.js";
+import logger from "./logger.js";
 
 const CURRENT_VERSION = "1.4.1"; // {x-release-please-version}
 

@@ -3,7 +3,7 @@ import { pipeline } from "stream/promises";
 
 import got from "got";
 
-import logger from "./logger";
+import logger from "./logger.js";
 
 const BASE_URL = "https://www.giantbomb.com/api/";
 const MS_BETWEEN_REQUEST = 1100;

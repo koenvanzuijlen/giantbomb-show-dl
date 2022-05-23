@@ -1,6 +1,6 @@
-import { cyan, green, magenta, red, yellow } from "chalk";
+import chalk from "chalk";
 import type { Dayjs } from "dayjs";
-
+const { cyan, green, magenta, red, yellow } = chalk;
 const init = (version: string): void => {
   console.log(`💣 ${cyan("giantbomb-show-dl")} ${green(version)} 💣`);
 };
@@ -17,7 +17,9 @@ const showComplete = (
     failed: number;
   }
 ): void => {
-  console.log(green(`Completed program for ${cyan(showName)}!`));
+  console.log(
+    green(`💣 ${cyan("giantbomb-show-dl")} is done for ${cyan(showName)}! 💣`)
+  );
   if (counts.failed > 0) {
     console.error(
       red(`${counts.failed} downloads failed! Re-run the command to retry.`)
