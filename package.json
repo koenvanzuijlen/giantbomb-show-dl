@@ -33,8 +33,7 @@
     "commander": "9.2.0",
     "dayjs": "1.11.2",
     "got": "11.8.3",
-    "sanitize-filename": "1.6.3",
-    "update-notifier": "5.1.0"
+    "sanitize-filename": "1.6.3"
   },
   "devDependencies": {
     "@commitlint/cli": "17.0.0",

@@ -5,7 +5,6 @@ import path from "path";
 import { Command } from "commander";
 import dayjs from "dayjs";
 import sanitize from "sanitize-filename";
-import updateNotifier from "update-notifier";
 
 import GiantBombAPI from "./api";
 import DownloadTracker from "./downloadtracker";
@@ -23,14 +22,6 @@ const QUALITY_OPTIONS = [
   QUALITY_HD,
   QUALITY_HIGHEST,
 ];
-
-updateNotifier({
-  pkg: {
-    name: "giantbomb-show-dl",
-    version: CURRENT_VERSION,
-  },
-  shouldNotifyInNpmScript: true,
-}).notify();
 
 const program = new Command()
   .option(
