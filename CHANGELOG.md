@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.4.1...v1.5.0) (2022-06-08)
+
+
+### Features
+
+* show download sizes in readable format ([7bc9796](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/7bc9796abe753ea12582dc48a88c1946e1059ad0))
+
 ### [1.4.1](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.4.0...v1.4.1) (2022-05-19)
 
 
