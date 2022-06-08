@@ -97,7 +97,6 @@ const downloadProgress = (
   percent = Math.floor(percent * 100);
   const color = percent === 100 ? green : yellow;
 
-  readline.clearLine(process.stdout, 0);
   readline.cursorTo(process.stdout, 0);
   process.stdout.write(
     `[${color("#".repeat(tenthsDone))}${" ".repeat(10 - tenthsDone)}] ${color(
@@ -106,6 +105,7 @@ const downloadProgress = (
       readableFilesize(total)
     )})`
   );
+  readline.clearLine(process.stdout, 1);
 };
 
 const readableFilesize = (bytes: number): string => {
