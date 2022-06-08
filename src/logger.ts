@@ -1,3 +1,4 @@
+import readline from "readline";
 import chalk from "chalk";
 import type { Dayjs } from "dayjs";
 const { cyan, green, magenta, red, yellow } = chalk;
@@ -95,11 +96,29 @@ const downloadProgress = (
   const tenthsDone = Math.floor(percent * 10);
   percent = Math.floor(percent * 100);
   const color = percent === 100 ? green : yellow;
+
+  readline.clearLine(process.stdout, 0);
+  readline.cursorTo(process.stdout, 0);
   process.stdout.write(
-    `\r[${color("#".repeat(tenthsDone))}${" ".repeat(10 - tenthsDone)}] ${color(
+    `[${color("#".repeat(tenthsDone))}${" ".repeat(10 - tenthsDone)}] ${color(
       `${percent}%`
-    )} (${magenta(transferred)} / ${magenta(total)} bytes)`
+    )} (${magenta(readableFilesize(transferred))} / ${magenta(
+      readableFilesize(total)
+    )})`
   );
+};
+
+const readableFilesize = (bytes: number): string => {
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  const threshold = 1024;
+
+  let currentUnit = 0;
+  while (bytes > threshold && currentUnit < units.length) {
+    bytes = bytes / 1024;
+    currentUnit++;
+  }
+
+  return `${bytes.toFixed(2)} ${units[currentUnit]}`;
 };
 
 const errorOptionsMissing = (missingOptions: string[]): void => {
