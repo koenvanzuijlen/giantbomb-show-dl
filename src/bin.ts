@@ -179,7 +179,7 @@ const main = async (): Promise<void> => {
 
     if (program.quality === QUALITY_HIGHEST && video.hd_url === urlToDownload) {
       // Check if 8k version exists, as it's not returned from the API
-      const highestUrl = video.hd_url.replace("_4000.", "_8000.");
+      const highestUrl = video.hd_url.replace(/_[0-9]{4}\.mp4$/, "_8000.mp4");
       const highestUrlExists = await api.checkIfExists(highestUrl);
       if (highestUrlExists) {
         urlToDownload = highestUrl;
