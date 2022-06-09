@@ -73,6 +73,7 @@ export default class GiantBombAPI {
         api_key: this.apiKey,
         format: "json",
       },
+      timeout: { request: 10000 },
     }).json<T>();
   }
 
@@ -84,6 +85,7 @@ export default class GiantBombAPI {
         searchParams: {
           api_key: this.apiKey,
         },
+        timeout: { request: 10000 },
       });
       return true;
     } catch (error) {
@@ -101,6 +103,7 @@ export default class GiantBombAPI {
             searchParams: {
               api_key: this.apiKey,
             },
+            timeout: { request: 10000 },
           })
           .on("downloadProgress", ({ percent, transferred, total }) => {
             logger.downloadProgress(percent, transferred, total);
