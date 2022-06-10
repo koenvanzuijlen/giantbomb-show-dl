@@ -26,24 +26,23 @@
     "prepack": "npm run build",
     "postinstall": "husky install",
     "prepublishOnly": "pinst --disable",
-    "postpublish": "pinst --enable",
-    "release": "standard-version"
+    "postpublish": "pinst --enable"
   },
   "dependencies": {
     "chalk": "5.0.1",
-    "commander": "9.2.0",
-    "dayjs": "1.11.2",
-    "got": "12.0.4",
+    "commander": "9.3.0",
+    "dayjs": "1.11.3",
+    "got": "12.1.0",
     "sanitize-filename": "1.6.3"
   },
   "devDependencies": {
-    "@commitlint/cli": "17.0.0",
+    "@commitlint/cli": "17.0.2",
     "@commitlint/config-angular": "17.0.0",
     "@tsconfig/node14": "1.0.1",
     "@types/node": "16.11.7",
-    "@typescript-eslint/eslint-plugin": "5.25.0",
-    "@typescript-eslint/parser": "5.25.0",
-    "eslint": "8.15.0",
+    "@typescript-eslint/eslint-plugin": "5.27.1",
+    "@typescript-eslint/parser": "5.27.1",
+    "eslint": "8.17.0",
     "eslint-config-prettier": "8.5.0",
     "husky": "8.0.1",
     "lint-staged": "12.4.1",
