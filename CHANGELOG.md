@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.4.1...v1.5.0) (2022-06-10)
+
+
+### Features
+
+* show download sizes in readable format ([7bc9796](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/7bc9796abe753ea12582dc48a88c1946e1059ad0))
+
+
+### Bug Fixes
+
+* add timeout to prevent hanging requests ([3b26554](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/3b26554f51b7521e1f55e51991ca466968ee87c7))
+* make highest url check more robust ([f0b601f](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/f0b601f5579f119e4e8a05ffa35c15e309534312))
+
 ## [1.5.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.4.1...v1.5.0) (2022-06-08)
 
 
