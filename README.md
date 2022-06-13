@@ -4,7 +4,7 @@ Command line tool to download full Giant Bomb shows with a single command.
 
 ## How to
 
-The easiest way to run this tool is to use NPX, which requires [Node.js](https://nodejs.org/) to be installed.
+The easiest way to run this tool is to use NPX, which requires [Node.js](https://nodejs.org/) (version 15 or later) to be installed.
 
 ```shell
 npx giantbomb-show-dl --api_key <YOUR_API_KEY> --show "Unprofessional Fridays" --dir "~/Downloads/GiantBomb"
