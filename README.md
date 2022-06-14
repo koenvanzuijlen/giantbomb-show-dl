@@ -32,6 +32,7 @@ giantbomb-show-dl --api_key <YOUR_API_KEY> --show "Unprofessional Fridays" --dir
 | `--quality`   |    ❌    | Quality to download videos in, will fall back to lower quality if selected is not available. Defaults to `highest`. Options are `low`, `high`, `hd` and `highest`. |
 | `--from_date` |    ❌    | Videos published before this date will not be downloaded. Formatted as `YYYY-MM-DD`.                                                                               |
 | `--to_date`   |    ❌    | Videos published after this date will not be downloaded. Formatted as `YYYY-MM-DD`.                                                                                |
+| `--debug`     |    ❌    | Will output extra logging when enabled, can be useful for troubleshooting.                                                                                         |
 
 ## Features
 
