@@ -1,9 +1,16 @@
 import readline from "readline";
 import chalk from "chalk";
 import type { Dayjs } from "dayjs";
-const { cyan, green, magenta, red, yellow } = chalk;
+const { cyan, gray, green, magenta, red, yellow } = chalk;
+
 const init = (version: string): void => {
   console.log(`💣 ${cyan("giantbomb-show-dl")} ${green(version)} 💣`);
+};
+
+const debug = (message: string): void => {
+  if (global.debug) {
+    console.log(gray(`_DEBUG_: ${message}`));
+  }
 };
 
 const showRetrieve = (showName: string): void => {
@@ -173,6 +180,7 @@ const errorDownloadFailed = (error: Error): void => {
 
 export default {
   init,
+  debug,
   showRetrieve,
   showComplete,
   posterDownload,

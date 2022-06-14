@@ -67,6 +67,8 @@ export default class GiantBombAPI {
   ): Promise<T> {
     await this.rateLimit();
 
+    logger.debug(`Requesting ${BASE_URL}${endpoint}/`);
+
     return await got(`${BASE_URL}${endpoint}/`, {
       searchParams: {
         ...parameters,
@@ -80,6 +82,7 @@ export default class GiantBombAPI {
   async checkIfExists(url: string): Promise<boolean> {
     await this.rateLimit();
 
+    logger.debug(`Requesting HEAD for ${url}`);
     try {
       await got.head(url, {
         searchParams: {
@@ -96,6 +99,7 @@ export default class GiantBombAPI {
   async downloadFile(url: string, targetPath: string): Promise<boolean> {
     await this.rateLimit();
 
+    logger.debug(`Downloading ${url}`);
     try {
       await pipeline(
         got
@@ -103,7 +107,6 @@ export default class GiantBombAPI {
             searchParams: {
               api_key: this.apiKey,
             },
-            timeout: { request: 10000 },
           })
           .on("downloadProgress", ({ percent, transferred, total }) => {
             logger.downloadProgress(percent, transferred, total);
@@ -125,6 +128,9 @@ export default class GiantBombAPI {
 
     try {
       while (!show && page < MAX_PAGES) {
+        if (page > 0) {
+          logger.debug("Paging through shows");
+        }
         const response = await this.request<ShowsResponse>("video_shows", {
           offset: page * PAGE_LIMIT,
           field_list: SHOW_FIELD_LIST.join(","),
@@ -155,6 +161,9 @@ export default class GiantBombAPI {
 
     try {
       while (foundVideos && page < MAX_PAGES) {
+        if (page > 0) {
+          logger.debug("Paging through videos");
+        }
         const response = await this.request<VideosResponse>("videos", {
           offset: page * PAGE_LIMIT,
           sort: "publish_date:asc",

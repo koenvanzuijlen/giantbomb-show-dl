@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import logger from "./logger.js";
 
 type JSONFormat = Array<string | number>;
 
@@ -18,7 +19,9 @@ export default class DownloadTracker {
       for (const entry of downloadedData) {
         this.downloaded.set(entry, true);
       }
+      logger.debug("Loaded existing download tracker file");
     } else {
+      logger.debug("Creating new download tracker file");
       this.writeFile();
     }
   }
@@ -31,10 +34,12 @@ export default class DownloadTracker {
   }
 
   isDownloaded(resource: number | string): boolean {
+    logger.debug(`Checking if ID ${resource} was already downloaded`);
     return this.downloaded.has(resource);
   }
 
   markDownloaded(resource: number | string): void {
+    logger.debug(`Marking ID ${resource} as downloaded`);
     this.downloaded.set(resource, true);
     this.writeFile();
   }

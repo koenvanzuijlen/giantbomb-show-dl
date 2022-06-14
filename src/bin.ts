@@ -31,7 +31,7 @@ const program = new Command()
   .option("--show <input>", "Giant Bomb show name")
   .option(
     "--dir <input>",
-    "Directory where shows should be saved, this tool will automatically make a subdirectory for each show"
+    "Directory where shows should be saved, a subdirectory will automatically be created for each show"
   )
   .option(
     "--quality <input>",
@@ -48,6 +48,7 @@ const program = new Command()
     "--to_date <input>",
     "If added videos from after this date will not be downloaded. Formatted as YYYY-MM-DD."
   )
+  .option("--debug", "Output extra logging, may be useful for troubleshooting")
   .version(CURRENT_VERSION)
   .parse()
   .opts();
@@ -79,6 +80,9 @@ const main = async (): Promise<void> => {
     logger.errorInvalidQuality(program.quality, QUALITY_OPTIONS);
     process.exit(1);
   }
+
+  // Set global variable with debugging status
+  global.debug = program.debug ?? false;
 
   // Parse passed dates if any
   let fromDate,
@@ -179,9 +183,11 @@ const main = async (): Promise<void> => {
 
     if (program.quality === QUALITY_HIGHEST && video.hd_url === urlToDownload) {
       // Check if 8k version exists, as it's not returned from the API
+      logger.debug("Checking if 8k bitrate video exists");
       const highestUrl = video.hd_url.replace(/_[0-9]{4}\.mp4$/, "_8000.mp4");
       const highestUrlExists = await api.checkIfExists(highestUrl);
       if (highestUrlExists) {
+        logger.debug("Found 8k bitrate video, downloading that");
         urlToDownload = highestUrl;
       }
     }
