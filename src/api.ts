@@ -1,7 +1,7 @@
 import fs from "fs";
 import { pipeline } from "stream/promises";
 
-import got from "got";
+import got, { RequestError } from "got";
 
 import logger from "./logger.js";
 
@@ -28,7 +28,7 @@ type Show = {
   };
 };
 
-type Video = {
+export type Video = {
   id: number;
   name: string;
   publish_date: string;
@@ -39,6 +39,10 @@ type Video = {
 
 type ShowsResponse = {
   results?: Show[];
+};
+
+type VideoResponse = {
+  results: Video;
 };
 
 type VideosResponse = {
@@ -116,7 +120,7 @@ export default class GiantBombAPI {
       process.stdout.write("\n");
       return true;
     } catch (error) {
-      logger.errorDownloadFailed(error as Error);
+      logger.errorDownloadFailed(error as RequestError);
       return false;
     }
   }
@@ -148,7 +152,7 @@ export default class GiantBombAPI {
         logger.errorShowNotFound(showName);
       }
     } catch (error) {
-      logger.errorShowCallFailed(error as Error);
+      logger.errorShowCallFailed(error as RequestError);
     }
     return show;
   }
@@ -175,11 +179,30 @@ export default class GiantBombAPI {
         page++;
       }
     } catch (error) {
-      logger.errorEpisodeCallFailed(error as Error);
+      logger.errorEpisodeCallFailed(error as RequestError);
       return null;
     }
 
     logger.episodeFound(videos.length);
     return videos;
+  }
+
+  async getVideoById(videoId: string): Promise<Video | null> {
+    logger.videoRetrieve(videoId);
+
+    try {
+      const response = await this.request<VideoResponse>(`video/${videoId}`, {
+        field_list: VIDEO_FIELD_LIST.join(","),
+      });
+      return response.results;
+    } catch (error) {
+      const statusCode = (error as RequestError).response?.statusCode;
+      if (statusCode === 404) {
+        logger.errorVideoNotFound(videoId);
+      } else {
+        logger.errorVideoCallFailed(error as RequestError);
+      }
+      return null;
+    }
   }
 }

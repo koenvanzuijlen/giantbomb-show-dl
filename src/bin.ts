@@ -6,7 +6,7 @@ import { Command } from "commander";
 import dayjs from "dayjs";
 import sanitize from "sanitize-filename";
 
-import GiantBombAPI from "./api.js";
+import GiantBombAPI, { Video } from "./api.js";
 import DownloadTracker from "./downloadtracker.js";
 import logger from "./logger.js";
 
@@ -23,12 +23,19 @@ const QUALITY_OPTIONS = [
   QUALITY_HIGHEST,
 ];
 
+export type DownloadCounter = {
+  downloaded: number;
+  skipped: number;
+  failed: number;
+};
+
 const program = new Command()
   .option(
     "--api_key <input>",
     "Personal Giant Bomb API key, retrieved from https://www.giantbomb.com/api/"
   )
   .option("--show <input>", "Giant Bomb show name")
+  .option("--video_id <input>", "Giant Bomb video ID(s), comma separated")
   .option(
     "--dir <input>",
     "Directory where shows should be saved, a subdirectory will automatically be created for each show"
@@ -53,23 +60,42 @@ const program = new Command()
   .parse()
   .opts();
 
+let api: GiantBombAPI;
+let directory: string;
+
 const main = async (): Promise<void> => {
+  initProgram();
+
+  if (program.show) {
+    await downloadShow();
+  } else if (program.video_id) {
+    await downloadVideosById();
+  }
+};
+
+const initProgram = (): void => {
   logger.init(CURRENT_VERSION);
+
+  // Check if not both show and video parameters are passed
+  if (Boolean(!program.show) === Boolean(!program.video_id)) {
+    logger.errorShowAndVideo();
+    process.exit(1);
+  }
 
   // Check if all required options are present
   const missingOptions: string[] = [];
-  for (const requiredOption of ["api_key", "show", "dir"]) {
+  for (const requiredOption of ["api_key", "dir"]) {
     if (!program[requiredOption]) {
       missingOptions.push(requiredOption);
     }
   }
   if (missingOptions.length) {
     logger.errorOptionsMissing(missingOptions);
-    process.exit();
+    process.exit(1);
   }
 
   // Check if the passed directory exists
-  const directory = path.resolve(program.dir);
+  directory = path.resolve(program.dir);
   if (!fs.existsSync(directory)) {
     logger.errorDirectoryNotFound(directory);
     process.exit(1);
@@ -84,17 +110,19 @@ const main = async (): Promise<void> => {
   // Set global variable with debugging status
   global.debug = program.debug ?? false;
 
+  api = new GiantBombAPI(program.api_key);
+};
+
+const downloadShow = async (): Promise<void> => {
   // Parse passed dates if any
-  let fromDate,
-    toDate = null;
+  let fromDate: dayjs.Dayjs | undefined;
+  let toDate: dayjs.Dayjs | undefined;
   if (program.from_date) {
     fromDate = dayjs(program.from_date, "YYYY-MM-DD");
   }
   if (program.to_date) {
     toDate = dayjs(program.to_date, "YYYY-MM-DD");
   }
-
-  const api = new GiantBombAPI(program.api_key);
 
   // Retrieve show data
   const show = await api.getShowInfo(program.show);
@@ -103,19 +131,16 @@ const main = async (): Promise<void> => {
   }
 
   // Create directory for the show if it does not exist yet
-  const showDirectory = path.join(
-    directory,
-    sanitize(show.title, { replacement: "_" })
-  );
-  if (!fs.existsSync(showDirectory)) {
-    fs.mkdirSync(showDirectory);
+  directory = path.join(directory, sanitize(show.title, { replacement: "_" }));
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory);
   }
-  const tracker = new DownloadTracker(showDirectory);
+  const tracker = new DownloadTracker(directory);
 
   // Download the show poster image if available
   if (show?.image?.original_url) {
     const imageExtension = path.parse(show.image.original_url).ext;
-    const imageTargetPath = path.join(showDirectory, `poster${imageExtension}`);
+    const imageTargetPath = path.join(directory, `poster${imageExtension}`);
     if (!tracker.isDownloaded("poster")) {
       logger.posterDownload(`poster${imageExtension}`);
       const success = await api.downloadFile(
@@ -132,79 +157,110 @@ const main = async (): Promise<void> => {
   if (videos === null) {
     process.exit(1);
   }
-
-  const counts = {
+  const counts: DownloadCounter = {
     downloaded: 0,
     skipped: 0,
     failed: 0,
   };
 
   for (const video of videos) {
-    const publishDate = dayjs(video.publish_date, "YYYY-MM-DD");
-
-    if (fromDate && publishDate.isBefore(fromDate, "day")) {
-      counts.skipped++;
-      logger.episodeSkipBeforeDate(video.name, publishDate, fromDate);
-      continue;
-    }
-
-    if (toDate && publishDate.isAfter(toDate, "day")) {
-      counts.skipped++;
-      logger.episodeSkipAfterDate(video.name, publishDate, toDate);
-      continue;
-    }
-
-    if (tracker.isDownloaded(video.id)) {
-      counts.skipped++;
-      logger.episodeSkipDownloaded(video.name);
-      continue;
-    }
-
-    // Get the correct URL for the quality
-    const hdUrl =
-      program.quality !== QUALITY_LOW &&
-      program.quality !== QUALITY_HIGH &&
-      video.hd_url;
-    const highUrl = program.quality !== QUALITY_LOW && video.high_url;
-    let urlToDownload = hdUrl || highUrl || video.low_url;
-    if (!urlToDownload) {
-      counts.skipped++;
-      logger.episodeSkipNoURL(video.name, program.quality);
-      continue;
-    }
-
-    const videoFilename = sanitize(
-      `${video.publish_date.substring(0, 10)} - ${video.name}${path.extname(
-        urlToDownload
-      )}`,
-      { replacement: "_" }
-    );
-    logger.episodeDownload(video.name, videoFilename);
-
-    if (program.quality === QUALITY_HIGHEST && video.hd_url === urlToDownload) {
-      // Check if 8k version exists, as it's not returned from the API
-      logger.debug("Checking if 8k bitrate video exists");
-      const highestUrl = video.hd_url.replace(/_[0-9]{4}\.mp4$/, "_8000.mp4");
-      const highestUrlExists = await api.checkIfExists(highestUrl);
-      if (highestUrlExists) {
-        logger.debug("Found 8k bitrate video, downloading that");
-        urlToDownload = highestUrl;
-      }
-    }
-
-    const success = await api.downloadFile(
-      urlToDownload,
-      path.join(showDirectory, videoFilename)
-    );
-    if (success) {
-      counts.downloaded++;
-      tracker.markDownloaded(video.id);
-    } else {
-      counts.failed++;
-    }
+    await downloadVideo(video, tracker, counts, { fromDate, toDate });
   }
 
   logger.showComplete(show.title, counts);
+};
+
+const downloadVideosById = async (): Promise<void> => {
+  const tracker = new DownloadTracker(directory);
+
+  const videoIds: string[] = program.video_id.split(",");
+
+  const counts: DownloadCounter = {
+    downloaded: 0,
+    skipped: 0,
+    failed: 0,
+  };
+
+  for (const videoId of videoIds) {
+    const video = await api.getVideoById(videoId);
+    if (!video) {
+      counts.failed++;
+      continue;
+    }
+    await downloadVideo(video, tracker, counts);
+  }
+
+  logger.videosComplete(videoIds.length, counts);
+};
+
+const downloadVideo = async (
+  video: Video,
+  tracker: DownloadTracker,
+  counts: DownloadCounter,
+  { fromDate, toDate }: { fromDate?: dayjs.Dayjs; toDate?: dayjs.Dayjs } = {}
+): Promise<void> => {
+  const publishDate = dayjs(video.publish_date, "YYYY-MM-DD");
+
+  if (fromDate && publishDate.isBefore(fromDate, "day")) {
+    counts.skipped++;
+    logger.episodeSkipBeforeDate(video.name, publishDate, fromDate);
+    return;
+  }
+
+  if (toDate && publishDate.isAfter(toDate, "day")) {
+    counts.skipped++;
+    logger.episodeSkipAfterDate(video.name, publishDate, toDate);
+    return;
+  }
+
+  if (tracker.isDownloaded(video.id)) {
+    counts.skipped++;
+    logger.videoSkipDownloaded(video.name);
+    return;
+  }
+
+  // Get the correct URL for the quality
+  const hdUrl =
+    program.quality !== QUALITY_LOW &&
+    program.quality !== QUALITY_HIGH &&
+    video.hd_url;
+  const highUrl = program.quality !== QUALITY_LOW && video.high_url;
+  let urlToDownload = hdUrl || highUrl || video.low_url;
+  if (!urlToDownload) {
+    counts.skipped++;
+    logger.videoSkipNoURL(video.name, program.quality);
+    return;
+  }
+
+  const videoFilename = sanitize(
+    `${video.publish_date.substring(0, 10)} - ${video.name}${path.extname(
+      urlToDownload
+    )}`,
+    { replacement: "_" }
+  );
+  logger.videoDownload(video.name, videoFilename);
+
+  if (program.quality === QUALITY_HIGHEST && video.hd_url === urlToDownload) {
+    // Check if 8k version exists, as it's not returned from the API
+    logger.debug("Checking if 8k bitrate video exists");
+    const highestUrl = video.hd_url.replace(/_[0-9]{4}\.mp4$/, "_8000.mp4");
+    const highestUrlExists = await api.checkIfExists(highestUrl);
+    if (highestUrlExists) {
+      logger.debug("Found 8k bitrate video, downloading that");
+      urlToDownload = highestUrl;
+    }
+  }
+
+  const success = await api.downloadFile(
+    urlToDownload,
+    path.join(directory, videoFilename)
+  );
+  if (success) {
+    counts.downloaded++;
+    tracker.markDownloaded(video.id);
+  } else {
+    counts.failed++;
+  }
 };
 
 main();
