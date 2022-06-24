@@ -1,24 +1,12 @@
 import readline from "readline";
 import chalk from "chalk";
+import { readableFilesize } from "./speedtracker.js";
 
 import type { Dayjs } from "dayjs";
 import type { RequestError } from "got";
 import type { DownloadCounter } from "./bin.js";
 
 const { cyan, gray, green, magenta, red, yellow } = chalk;
-
-const readableFilesize = (bytes: number): string => {
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  const threshold = 1024;
-
-  let currentUnit = 0;
-  while (bytes > threshold && currentUnit < units.length) {
-    bytes = bytes / 1024;
-    currentUnit++;
-  }
-
-  return `${bytes.toFixed(2)} ${units[currentUnit]}`;
-};
 
 export default {
   init: (version: string): void => {
@@ -136,7 +124,8 @@ export default {
   downloadProgress: (
     percent: number,
     transferred: number,
-    total: number
+    total: number,
+    speed: string
   ): void => {
     const tenthsDone = Math.floor(percent * 10);
     percent = Math.floor(percent * 100);
@@ -148,7 +137,7 @@ export default {
         `${percent}%`
       )} (${magenta(readableFilesize(transferred))} / ${magenta(
         readableFilesize(total)
-      )})`
+      )}) ${speed}`
     );
     readline.clearLine(process.stdout, 1);
   },

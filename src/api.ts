@@ -4,6 +4,7 @@ import { pipeline } from "stream/promises";
 import got, { RequestError } from "got";
 
 import logger from "./logger.js";
+import SpeedTracker from "./speedtracker.js";
 
 const BASE_URL = "https://www.giantbomb.com/api/";
 const MS_BETWEEN_REQUEST = 1100;
@@ -104,6 +105,7 @@ export default class GiantBombAPI {
     await this.rateLimit();
 
     logger.debug(`Downloading ${url}`);
+    const speedTracker = new SpeedTracker();
     try {
       await pipeline(
         got
@@ -113,7 +115,11 @@ export default class GiantBombAPI {
             },
           })
           .on("downloadProgress", ({ percent, transferred, total }) => {
-            logger.downloadProgress(percent, transferred, total);
+            let speed = speedTracker.getCurrentSpeed(transferred, total);
+            if (transferred === total) {
+              speed = speedTracker.getAverageSpeed();
+            }
+            logger.downloadProgress(percent, transferred, total, speed);
           }),
         fs.createWriteStream(targetPath)
       );
