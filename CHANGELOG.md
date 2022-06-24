@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.6.0...v1.7.0) (2022-06-24)
+
+
+### Features
+
+* add --video_id option to download non-show videos ([1a66e40](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/1a66e4058032b9d817693a9b7d9ffaff6b0455c9))
+* show download speed and time ([2e3ac96](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/2e3ac960065527bfb02c4d892a11c978c1e0aea9))
+
 ## [1.6.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.5.0...v1.6.0) (2022-06-14)
 
 
