@@ -41,6 +41,7 @@ const readableTime = (seconds: number): string => {
 };
 
 export default class SpeedTracker {
+  private initialLog: SpeedLog | null = null;
   private history: SpeedLog[] = [];
 
   getCurrentSpeed(transferred: number, total: number): string {
@@ -48,12 +49,17 @@ export default class SpeedTracker {
     const now = dayjs();
     const range = dayjs().subtract(secondsInRange, "second");
 
-    this.history.push({ time: now, transferred });
+    if (!this.initialLog) {
+      this.initialLog = { time: now, transferred };
+    }
 
-    const earliestLog = this.history.find((speedLog) => {
+    // Only keep relevant parts of history
+    this.history = this.history.filter((speedLog) => {
       return range.isBefore(speedLog.time);
     });
-    const bytesTransferred = transferred - (earliestLog?.transferred ?? 0);
+    this.history.push({ time: now, transferred });
+
+    const bytesTransferred = transferred - (this.history[0]?.transferred ?? 0);
     const bytesPerSecond = Math.round(bytesTransferred / secondsInRange);
 
     const secondsLeft = Math.round((total - transferred) / bytesPerSecond);
@@ -67,8 +73,8 @@ export default class SpeedTracker {
     let bytesPerSecond = 0;
     let secondsDownloaded = 0;
 
-    if (this.history.length) {
-      const firstLog = this.history[0];
+    if (this.history.length && this.initialLog) {
+      const firstLog = this.initialLog;
       const lastLog = this.history[this.history.length - 1];
 
       const bytesTransferred = lastLog.transferred - firstLog.transferred;
