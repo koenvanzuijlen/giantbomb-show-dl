@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.1](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.7.0...v1.7.1) (2022-06-25)
+
+
+### Bug Fixes
+
+* do not keep entire history in memory ([749e5ff](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/749e5ffb5ed2d32e03fb44f7d15db929e55d830e))
+
 ## [1.7.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.6.0...v1.7.0) (2022-06-24)
 
 
