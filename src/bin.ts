@@ -10,7 +10,7 @@ import GiantBombAPI, { Video } from "./api.js";
 import DownloadTracker from "./downloadtracker.js";
 import logger from "./logger.js";
 
-const CURRENT_VERSION = "1.7.0"; // {x-release-please-version}
+const CURRENT_VERSION = "1.7.1"; // {x-release-please-version}
 
 const QUALITY_LOW = "low";
 const QUALITY_HIGH = "high";
