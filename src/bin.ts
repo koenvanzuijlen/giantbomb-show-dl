@@ -129,6 +129,7 @@ const downloadShow = async (): Promise<void> => {
   if (!show) {
     process.exit(1);
   }
+  console.dir(show);
 
   // Create directory for the show if it does not exist yet
   directory = path.join(directory, sanitize(show.title, { replacement: "_" }));
@@ -139,16 +140,31 @@ const downloadShow = async (): Promise<void> => {
 
   // Download the show poster image if available
   if (show?.image?.original_url) {
-    const imageExtension = path.parse(show.image.original_url).ext;
-    const imageTargetPath = path.join(directory, `poster${imageExtension}`);
-    if (!tracker.isDownloaded("poster")) {
-      logger.posterDownload("show poster", `poster${imageExtension}`);
+    const imageExtension = path.extname(show.image.original_url);
+    const imageTargetPath = path.join(directory, `image${imageExtension}`);
+    if (!tracker.isDownloaded("show_image")) {
+      logger.posterDownload("show image", `image${imageExtension}`);
       const success = await api.downloadFile(
         show.image.original_url,
         imageTargetPath
       );
       if (success) {
-        tracker.markDownloaded("poster");
+        tracker.markDownloaded("show_image");
+      }
+    }
+  }
+
+  if (show?.logo?.original_url) {
+    const imageExtension = path.extname(show.logo.original_url);
+    const imageTargetPath = path.join(directory, `logo${imageExtension}`);
+    if (!tracker.isDownloaded("show_logo")) {
+      logger.posterDownload("show logo", `logo${imageExtension}`);
+      const success = await api.downloadFile(
+        show.logo.original_url,
+        imageTargetPath
+      );
+      if (success) {
+        tracker.markDownloaded("show_logo");
       }
     }
   }

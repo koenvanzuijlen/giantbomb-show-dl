@@ -11,12 +11,13 @@ const MS_BETWEEN_REQUEST = 1100;
 const MAX_PAGES = 5;
 const PAGE_LIMIT = 100;
 
-const SHOW_FIELD_LIST = ["id", "title", "image"];
-
 type Show = {
   id: number;
   title: string;
   image?: {
+    original_url?: string;
+  };
+  logo?: {
     original_url?: string;
   };
 };
@@ -138,7 +139,6 @@ export default class GiantBombAPI {
         }
         const response = await this.request<ShowsResponse>("video_shows", {
           offset: page * PAGE_LIMIT,
-          field_list: SHOW_FIELD_LIST.join(","),
         });
         if (!response.results) {
           page = MAX_PAGES;
