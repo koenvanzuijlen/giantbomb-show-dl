@@ -56,8 +56,8 @@ export default {
     }
   },
 
-  posterDownload: (filename: string): void => {
-    console.log(`Downloading show poster to: ${magenta(filename)}`);
+  posterDownload: (what: string, filename: string): void => {
+    console.log(`Downloading ${what} to: ${magenta(filename)}`);
   },
 
   episodeRetrieve: (showName: string): void => {

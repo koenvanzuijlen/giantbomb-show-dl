@@ -12,14 +12,6 @@ const MAX_PAGES = 5;
 const PAGE_LIMIT = 100;
 
 const SHOW_FIELD_LIST = ["id", "title", "image"];
-const VIDEO_FIELD_LIST = [
-  "id",
-  "name",
-  "publish_date",
-  "low_url",
-  "high_url",
-  "hd_url",
-];
 
 type Show = {
   id: number;
@@ -36,6 +28,9 @@ export type Video = {
   low_url?: string;
   high_url?: string;
   hd_url?: string;
+  image?: {
+    original_url?: string;
+  };
 };
 
 type ShowsResponse = {
@@ -178,7 +173,6 @@ export default class GiantBombAPI {
           offset: page * PAGE_LIMIT,
           sort: "publish_date:asc",
           filter: `video_show:${show.id}`,
-          field_list: VIDEO_FIELD_LIST.join(","),
         });
         foundVideos = response.results.length > 0;
         videos = [...videos, ...response.results];
@@ -197,9 +191,10 @@ export default class GiantBombAPI {
     logger.videoRetrieve(videoId);
 
     try {
-      const response = await this.request<VideoResponse>(`video/${videoId}`, {
-        field_list: VIDEO_FIELD_LIST.join(","),
-      });
+      const response = await this.request<VideoResponse>(
+        `video/${videoId}`,
+        {}
+      );
       return response.results;
     } catch (error) {
       const statusCode = (error as RequestError).response?.statusCode;

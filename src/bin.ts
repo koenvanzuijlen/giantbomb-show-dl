@@ -142,7 +142,7 @@ const downloadShow = async (): Promise<void> => {
     const imageExtension = path.parse(show.image.original_url).ext;
     const imageTargetPath = path.join(directory, `poster${imageExtension}`);
     if (!tracker.isDownloaded("poster")) {
-      logger.posterDownload(`poster${imageExtension}`);
+      logger.posterDownload("show poster", `poster${imageExtension}`);
       const success = await api.downloadFile(
         show.image.original_url,
         imageTargetPath
@@ -213,6 +213,33 @@ const downloadVideo = async (
     return;
   }
 
+  const filename = sanitize(`${video.publish_date} - ${video.name}`, {
+    replacement: "_",
+  });
+
+  // Write metadata to JSON file
+  const metadataPath = path.join(directory, `${filename}.metadata.json`);
+  if (!fs.existsSync(metadataPath)) {
+    logger.debug(`Writing metadata for video`);
+    fs.writeFileSync(metadataPath, JSON.stringify(video, null, 2));
+  }
+
+  // Download video image
+  if (
+    video?.image?.original_url &&
+    !tracker.isDownloaded(`${video.id}_image`)
+  ) {
+    const imagePath = path.join(
+      directory,
+      `${filename}${path.extname(video.image.original_url)}`
+    );
+    logger.posterDownload("video image", imagePath);
+    const success = await api.downloadFile(video.image.original_url, imagePath);
+    if (success) {
+      tracker.markDownloaded(`${video.id}_image`);
+    }
+  }
+
   if (tracker.isDownloaded(video.id)) {
     counts.skipped++;
     logger.videoSkipDownloaded(video.name);
@@ -232,12 +259,9 @@ const downloadVideo = async (
     return;
   }
 
-  const videoFilename = sanitize(
-    `${video.publish_date.substring(0, 10)} - ${video.name}${path.extname(
-      urlToDownload
-    )}`,
-    { replacement: "_" }
-  );
+  const videoFilename = `${video.publish_date.substring(0, 10)} - ${
+    video.name
+  }${path.extname(urlToDownload)}`;
   logger.videoDownload(video.name, videoFilename);
 
   if (program.quality === QUALITY_HIGHEST && video.hd_url === urlToDownload) {
