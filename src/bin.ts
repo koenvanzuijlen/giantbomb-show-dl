@@ -129,7 +129,6 @@ const downloadShow = async (): Promise<void> => {
   if (!show) {
     process.exit(1);
   }
-  console.dir(show);
 
   // Create directory for the show if it does not exist yet
   directory = path.join(directory, sanitize(show.title, { replacement: "_" }));
