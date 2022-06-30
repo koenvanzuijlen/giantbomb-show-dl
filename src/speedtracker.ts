@@ -77,12 +77,14 @@ export default class SpeedTracker {
       const firstLog = this.initialLog;
       const lastLog = this.history[this.history.length - 1];
 
-      const bytesTransferred = lastLog.transferred - firstLog.transferred;
-      bytesPerSecond = Math.round(
-        bytesTransferred / lastLog.time.diff(firstLog.time, "second")
-      );
-
       secondsDownloaded = lastLog.time.diff(firstLog.time, "second");
+
+      if (secondsDownloaded > 0) {
+        const bytesTransferred = lastLog.transferred - firstLog.transferred;
+        bytesPerSecond = Math.round(
+          bytesTransferred / (secondsDownloaded || 1)
+        );
+      }
     }
 
     return `avg. ${chalk.magenta(
