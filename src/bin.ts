@@ -137,7 +137,14 @@ const downloadShow = async (): Promise<void> => {
   }
   const tracker = new DownloadTracker(directory);
 
-  // Download the show poster image if available
+  // Write metadata to JSON file
+  const metadataPath = path.join(directory, `metadata.json`);
+  if (!fs.existsSync(metadataPath)) {
+    logger.debug(`Writing metadata for show`);
+    fs.writeFileSync(metadataPath, JSON.stringify(show, null, 2));
+  }
+
+  // Download the show image if available
   if (show?.image?.original_url) {
     const imageExtension = path.extname(show.image.original_url);
     const imageTargetPath = path.join(directory, `image${imageExtension}`);
@@ -153,6 +160,7 @@ const downloadShow = async (): Promise<void> => {
     }
   }
 
+  // Download the show logo if available
   if (show?.logo?.original_url) {
     const imageExtension = path.extname(show.logo.original_url);
     const imageTargetPath = path.join(directory, `logo${imageExtension}`);
