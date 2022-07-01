@@ -9,6 +9,7 @@ import sanitize from "sanitize-filename";
 import GiantBombAPI, { Video } from "./api.js";
 import DownloadTracker from "./downloadtracker.js";
 import logger from "./logger.js";
+import Mp3tag from "./mp3tag.js";
 
 const CURRENT_VERSION = "1.7.1"; // {x-release-please-version}
 
@@ -54,6 +55,10 @@ const program = new Command()
   .option(
     "--to_date <input>",
     "If added videos from after this date will not be downloaded. Formatted as YYYY-MM-DD."
+  )
+  .option(
+    "--mp3tag",
+    "Create a text file that can be used in Mp3tag to add video tags"
   )
   .option("--debug", "Output extra logging, may be useful for troubleshooting")
   .version(CURRENT_VERSION)
@@ -176,10 +181,17 @@ const downloadShow = async (): Promise<void> => {
     }
   }
 
+  // Setup MP3tag file if requested
+  let mp3tag: Mp3tag | undefined;
+  if (program.mp3tag) {
+    mp3tag = new Mp3tag(directory);
+  }
+
   const videos = await api.getVideos(show);
   if (videos === null) {
     process.exit(1);
   }
+
   const counts: DownloadCounter = {
     downloaded: 0,
     skipped: 0,
@@ -187,7 +199,7 @@ const downloadShow = async (): Promise<void> => {
   };
 
   for (const video of videos) {
-    await downloadVideo(video, tracker, counts, { fromDate, toDate });
+    await downloadVideo(video, tracker, counts, { fromDate, toDate, mp3tag });
   }
 
   logger.showComplete(show.title, counts);
@@ -195,6 +207,12 @@ const downloadShow = async (): Promise<void> => {
 
 const downloadVideosById = async (): Promise<void> => {
   const tracker = new DownloadTracker(directory);
+
+  // Setup MP3tag file if requested
+  let mp3tag: Mp3tag | undefined;
+  if (program.mp3tag) {
+    mp3tag = new Mp3tag(directory);
+  }
 
   const videoIds: string[] = program.video_id.split(",");
 
@@ -210,7 +228,7 @@ const downloadVideosById = async (): Promise<void> => {
       counts.failed++;
       continue;
     }
-    await downloadVideo(video, tracker, counts);
+    await downloadVideo(video, tracker, counts, { mp3tag });
   }
 
   logger.videosComplete(videoIds.length, counts);
@@ -220,7 +238,11 @@ const downloadVideo = async (
   video: Video,
   tracker: DownloadTracker,
   counts: DownloadCounter,
-  { fromDate, toDate }: { fromDate?: dayjs.Dayjs; toDate?: dayjs.Dayjs } = {}
+  {
+    fromDate,
+    toDate,
+    mp3tag,
+  }: { fromDate?: dayjs.Dayjs; toDate?: dayjs.Dayjs; mp3tag?: Mp3tag } = {}
 ): Promise<void> => {
   const publishDate = dayjs(video.publish_date, "YYYY-MM-DD");
 
@@ -245,6 +267,11 @@ const downloadVideo = async (
   if (!fs.existsSync(metadataPath)) {
     logger.debug(`Writing metadata for video`);
     fs.writeFileSync(metadataPath, JSON.stringify(video, null, 2));
+  }
+
+  // Add data for Mp3tag
+  if (mp3tag) {
+    mp3tag.addEntry(video.publish_date.substring(0, 10), video.name);
   }
 
   // Download video image
@@ -282,9 +309,7 @@ const downloadVideo = async (
     return;
   }
 
-  const videoFilename = `${video.publish_date.substring(0, 10)} - ${
-    video.name
-  }${path.extname(urlToDownload)}`;
+  const videoFilename = `${filename}${path.extname(urlToDownload)}`;
   logger.videoDownload(video.name, videoFilename);
 
   if (program.quality === QUALITY_HIGHEST && video.hd_url === urlToDownload) {
