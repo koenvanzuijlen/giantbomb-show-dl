@@ -47,9 +47,9 @@ Will keep track of which files are downloaded successfully. These files will not
 
 To reset download tracking remove the `downloaded.json` file from the relative directory.
 
-### Show poster download
+### Save images and metadata
 
-Automatically download the poster image for the selected show. This can be used in libraries like Plex.
+This tool also downloads the image(s) and metadata for each show and video. This data can be used to enhance your library in your media server of choice.
 
 ### Rate limiting
 
