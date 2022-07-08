@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.7.1...v1.8.0) (2022-07-08)
+
+
+### Features
+
+* add --mp3tag option ([f080d22](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/f080d222d17fceebd30a5dbd027f24c7629146d0))
+* download both show image and logo ([a55f74a](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/a55f74abb3167e1809c2146add171e92cc0aceef))
+* save show metadata ([a55a8ba](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/a55a8baf5a2d723c4cef6376c01303baadca28e1))
+* save video image and metadata ([7539391](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/753939154bc1ea7c3938e774b02ca5abc3ab0c86))
+
+
+### Bug Fixes
+
+* average download speed for small files was incorrect ([e9c8dbb](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/e9c8dbb2d318874760f9bb4223524ee7b8273ce2))
+* show filename instead of path ([4a4a79e](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/4a4a79eb8fdc4cabb200a869c486f1482ce60660))
+
 ### [1.7.1](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.7.0...v1.7.1) (2022-06-25)
 
 
