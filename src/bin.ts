@@ -279,11 +279,11 @@ const downloadVideo = async (
     video?.image?.original_url &&
     !tracker.isDownloaded(`${video.id}_image`)
   ) {
-    const imagePath = path.join(
-      directory,
-      `${filename}${path.extname(video.image.original_url)}`
-    );
-    logger.posterDownload("video image", imagePath);
+    const imageFilename = `${filename}${path.extname(
+      video.image.original_url
+    )}`;
+    const imagePath = path.join(directory, imageFilename);
+    logger.posterDownload("video image", imageFilename);
     const success = await api.downloadFile(video.image.original_url, imagePath);
     if (success) {
       tracker.markDownloaded(`${video.id}_image`);
