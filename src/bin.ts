@@ -154,7 +154,7 @@ const downloadShow = async (): Promise<void> => {
     const imageExtension = path.extname(show.image.original_url);
     const imageTargetPath = path.join(directory, `image${imageExtension}`);
     if (!tracker.isDownloaded("show_image")) {
-      logger.posterDownload("show image", `image${imageExtension}`);
+      logger.fileDownload("show image", `image${imageExtension}`);
       const success = await api.downloadFile(
         show.image.original_url,
         imageTargetPath
@@ -170,7 +170,7 @@ const downloadShow = async (): Promise<void> => {
     const imageExtension = path.extname(show.logo.original_url);
     const imageTargetPath = path.join(directory, `logo${imageExtension}`);
     if (!tracker.isDownloaded("show_logo")) {
-      logger.posterDownload("show logo", `logo${imageExtension}`);
+      logger.fileDownload("show logo", `logo${imageExtension}`);
       const success = await api.downloadFile(
         show.logo.original_url,
         imageTargetPath
@@ -244,17 +244,18 @@ const downloadVideo = async (
     mp3tag,
   }: { fromDate?: dayjs.Dayjs; toDate?: dayjs.Dayjs; mp3tag?: Mp3tag } = {}
 ): Promise<void> => {
+  logger.videoDownloadIntro(video.name);
   const publishDate = dayjs(video.publish_date, "YYYY-MM-DD");
 
   if (fromDate && publishDate.isBefore(fromDate, "day")) {
     counts.skipped++;
-    logger.episodeSkipBeforeDate(video.name, publishDate, fromDate);
+    logger.videoSkipBeforeDate(video.name, publishDate, fromDate);
     return;
   }
 
   if (toDate && publishDate.isAfter(toDate, "day")) {
     counts.skipped++;
-    logger.episodeSkipAfterDate(video.name, publishDate, toDate);
+    logger.videoSkipAfterDate(video.name, publishDate, toDate);
     return;
   }
 
@@ -283,7 +284,7 @@ const downloadVideo = async (
       video.image.original_url
     )}`;
     const imagePath = path.join(directory, imageFilename);
-    logger.posterDownload("video image", imageFilename);
+    logger.fileDownload("video image", imageFilename);
     const success = await api.downloadFile(video.image.original_url, imagePath);
     if (success) {
       tracker.markDownloaded(`${video.id}_image`);
@@ -310,7 +311,7 @@ const downloadVideo = async (
   }
 
   const videoFilename = `${filename}${path.extname(urlToDownload)}`;
-  logger.videoDownload(video.name, videoFilename);
+  logger.fileDownload("video", videoFilename);
 
   if (program.quality === QUALITY_HIGHEST && video.hd_url === urlToDownload) {
     // Check if 8k version exists, as it's not returned from the API
