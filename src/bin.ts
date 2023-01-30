@@ -316,11 +316,24 @@ const downloadVideo = async (
   if (program.quality === QUALITY_HIGHEST && video.hd_url === urlToDownload) {
     // Check if 8k version exists, as it's not returned from the API
     logger.debug("Checking if 8k bitrate video exists");
-    const highestUrl = video.hd_url.replace(/_[0-9]{4}\.mp4$/, "_8000.mp4");
-    const highestUrlExists = await api.checkIfExists(highestUrl);
-    if (highestUrlExists) {
-      logger.debug("Found 8k bitrate video, downloading that");
-      urlToDownload = highestUrl;
+
+    const possibleMaxQualityUrls = [
+      video.hd_url.replace(/_[0-9]{4}\.mp4$/, "_8000.mp4"),
+      video.hd_url.replace(/[0-9]{4}k\.mp4$/, "8000k.mp4"),
+    ];
+    for (const possibleMaxQualityUrl of possibleMaxQualityUrls) {
+      if (possibleMaxQualityUrl === urlToDownload) {
+        // Regex didn't replace anything
+        continue;
+      }
+      const maxQualityUrlExists = await api.checkIfExists(
+        possibleMaxQualityUrl
+      );
+      if (maxQualityUrlExists) {
+        logger.debug("Found 8k bitrate video, downloading that");
+        urlToDownload = possibleMaxQualityUrl;
+        break;
+      }
     }
   }
 
