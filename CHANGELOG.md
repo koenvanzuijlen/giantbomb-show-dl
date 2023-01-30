@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.9.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.8.0...v1.9.0) (2023-01-30)
+
+
+### Features
+
+* improve output readability ([50df863](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/50df8632275d1d35d02e41d83e7389d4b1fe7249))
+
+
+### Bug Fixes
+
+* 8k bitrate check works for newer videos ([#16](https://github.com/koenvanzuijlen/giantbomb-show-dl/issues/16)) ([8bc28bb](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/8bc28bbe9022ae3e043649d3ef034d8b942c983b))
+
 ## [1.8.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.7.1...v1.8.0) (2022-07-08)
 
 
