@@ -11,7 +11,7 @@ Command line tool to download complete Giant Bomb shows or a list of separate vi
 The easiest way to run this tool is to use `npx`.
 
 ```shell
-npx giantbomb-show-dl --api_key <YOUR_API_KEY> --show "Unprofessional Fridays" --dir "~/Downloads/GiantBomb"
+npx giantbomb-show-dl@latest --api_key <YOUR_API_KEY> --show "Unprofessional Fridays" --dir "~/Downloads/GiantBomb"
 ```
 
 It's also possible to install the tool globally using `npm`, after which the binary can be used in your shell. If you use this method make sure to regularly check for updates.
