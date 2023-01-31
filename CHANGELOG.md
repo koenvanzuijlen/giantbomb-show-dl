@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.9.1](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.9.0...v1.9.1) (2023-01-31)
+
+
+### Bug Fixes
+
+* set typescript compiler module to ES2020 ([#17](https://github.com/koenvanzuijlen/giantbomb-show-dl/issues/17)) ([6021534](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/60215347406ae2fcabb5858a6eebbd00802f30f5))
+
 ## [1.9.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.8.0...v1.9.0) (2023-01-30)
 
 
