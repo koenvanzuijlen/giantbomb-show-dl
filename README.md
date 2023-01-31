@@ -1,4 +1,6 @@
-# giantbomb-show-dl
+# 💣 giantbomb-show-dl 💣
+
+[![npm](https://img.shields.io/npm/dt/giantbomb-show-dl.svg)](https://www.npmjs.com/package/giantbomb-show-dl)
 
 Command line tool to download complete Giant Bomb shows or a list of separate videos with a single command.
 
