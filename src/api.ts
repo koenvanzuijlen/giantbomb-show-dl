@@ -24,6 +24,7 @@ type Show = {
 
 export type Video = {
   id: number;
+  guid: string;
   name: string;
   publish_date: string;
   low_url?: string;
@@ -158,7 +159,7 @@ export default class GiantBombAPI {
     return show;
   }
 
-  async getVideos(show: Show): Promise<Video[] | null> {
+  async getShowVideos(show: Show): Promise<Video[] | null> {
     logger.episodeRetrieve(show.title);
     let page = 0;
     let foundVideos = true;
@@ -185,6 +186,21 @@ export default class GiantBombAPI {
 
     logger.episodeFound(videos.length);
     return videos;
+  }
+
+  async getAllVideosPage(page: number): Promise<Video[] | null> {
+    logger.pageRetrieve(page);
+
+    try {
+      const response = await this.request<VideosResponse>("videos", {
+        offset: page * PAGE_LIMIT,
+        sort: "publish_date:asc",
+      });
+      return response.results;
+    } catch (error) {
+      logger.errorVideosPageFailed(error as RequestError);
+      return null;
+    }
   }
 
   async getVideoById(videoId: string): Promise<Video | null> {

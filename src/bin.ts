@@ -37,6 +37,7 @@ const program = new Command()
   )
   .option("--show <input>", "Giant Bomb show name")
   .option("--video_id <input>", "Giant Bomb video ID(s), comma separated")
+  .option("--archive", "Enable archive mode, download all videos 1 by 1")
   .option(
     "--dir <input>",
     "Directory where shows should be saved, a subdirectory will automatically be created for each show"
@@ -75,15 +76,20 @@ const main = async (): Promise<void> => {
     await downloadShow();
   } else if (program.video_id) {
     await downloadVideosById();
+  } else if (program.archive) {
+    await downloadArchive();
   }
 };
 
 const initProgram = (): void => {
   logger.init(CURRENT_VERSION);
 
-  // Check if not both show and video parameters are passed
-  if (Boolean(!program.show) === Boolean(!program.video_id)) {
-    logger.errorShowAndVideo();
+  // Check if only one mode was selected
+  if (
+    [program.show, program.video_id, program.archive].filter(Boolean).length !==
+    1
+  ) {
+    logger.errorModeSelection();
     process.exit(1);
   }
 
@@ -118,16 +124,17 @@ const initProgram = (): void => {
   api = new GiantBombAPI(program.api_key);
 };
 
+const parseDate = (date: string | undefined): dayjs.Dayjs | undefined => {
+  if (date) {
+    return dayjs(date, "YYYY-MM-DD");
+  }
+  return undefined;
+};
+
 const downloadShow = async (): Promise<void> => {
   // Parse passed dates if any
-  let fromDate: dayjs.Dayjs | undefined;
-  let toDate: dayjs.Dayjs | undefined;
-  if (program.from_date) {
-    fromDate = dayjs(program.from_date, "YYYY-MM-DD");
-  }
-  if (program.to_date) {
-    toDate = dayjs(program.to_date, "YYYY-MM-DD");
-  }
+  const fromDate = parseDate(program.from_date);
+  const toDate = parseDate(program.to_date);
 
   // Retrieve show data
   const show = await api.getShowInfo(program.show);
@@ -187,7 +194,7 @@ const downloadShow = async (): Promise<void> => {
     mp3tag = new Mp3tag(directory);
   }
 
-  const videos = await api.getVideos(show);
+  const videos = await api.getShowVideos(show);
   if (videos === null) {
     process.exit(1);
   }
@@ -234,6 +241,50 @@ const downloadVideosById = async (): Promise<void> => {
   logger.videosComplete(videoIds.length, counts);
 };
 
+const downloadArchive = async (): Promise<void> => {
+  logger.archiveInit();
+
+  // Parse passed dates if any
+  const fromDate = parseDate(program.from_date);
+  const toDate = parseDate(program.to_date);
+
+  // Add archive path to the directory
+  directory = path.join(directory, "_archive_");
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory);
+  }
+
+  const tracker = new DownloadTracker(directory);
+  const counts: DownloadCounter = {
+    downloaded: 0,
+    skipped: 0,
+    failed: 0,
+  };
+
+  let page = 0;
+  let foundVideos = true;
+  let videoCount = 0;
+  while (foundVideos) {
+    const videos = await api.getAllVideosPage(page);
+    if (videos === null || videos.length === 0) {
+      foundVideos = false;
+      continue;
+    }
+    videoCount += videos.length;
+
+    for (const video of videos) {
+      await downloadVideo(video, tracker, counts, {
+        fromDate,
+        toDate,
+        createSubDirectory: true,
+      });
+    }
+    page++;
+  }
+
+  logger.videosComplete(videoCount, counts);
+};
+
 const downloadVideo = async (
   video: Video,
   tracker: DownloadTracker,
@@ -242,7 +293,13 @@ const downloadVideo = async (
     fromDate,
     toDate,
     mp3tag,
-  }: { fromDate?: dayjs.Dayjs; toDate?: dayjs.Dayjs; mp3tag?: Mp3tag } = {}
+    createSubDirectory = false,
+  }: {
+    fromDate?: dayjs.Dayjs;
+    toDate?: dayjs.Dayjs;
+    mp3tag?: Mp3tag;
+    createSubDirectory?: boolean;
+  } = {}
 ): Promise<void> => {
   logger.videoDownloadIntro(video.name);
   const publishDate = dayjs(video.publish_date, "YYYY-MM-DD");
@@ -263,8 +320,17 @@ const downloadVideo = async (
     replacement: "_",
   });
 
+  // Create a subdirectory per video if enabled
+  let videoDirectory = directory;
+  if (createSubDirectory) {
+    videoDirectory = path.join(directory, filename);
+    if (!fs.existsSync(videoDirectory)) {
+      fs.mkdirSync(videoDirectory);
+    }
+  }
+
   // Write metadata to JSON file
-  const metadataPath = path.join(directory, `${filename}.metadata.json`);
+  const metadataPath = path.join(videoDirectory, `${filename}.metadata.json`);
   if (!fs.existsSync(metadataPath)) {
     logger.debug(`Writing metadata for video`);
     fs.writeFileSync(metadataPath, JSON.stringify(video, null, 2));
@@ -283,7 +349,7 @@ const downloadVideo = async (
     const imageFilename = `${filename}${path.extname(
       video.image.original_url
     )}`;
-    const imagePath = path.join(directory, imageFilename);
+    const imagePath = path.join(videoDirectory, imageFilename);
     logger.fileDownload("video image", imageFilename);
     const success = await api.downloadFile(video.image.original_url, imagePath);
     if (success) {
@@ -339,7 +405,7 @@ const downloadVideo = async (
 
   const success = await api.downloadFile(
     urlToDownload,
-    path.join(directory, videoFilename)
+    path.join(videoDirectory, videoFilename)
   );
   if (success) {
     counts.downloaded++;

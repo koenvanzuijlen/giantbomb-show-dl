@@ -26,17 +26,18 @@ giantbomb-show-dl --api_key <YOUR_API_KEY> --show "Unprofessional Fridays" --dir
 
 ## Options
 
-| Option        | Required | Description                                                                                                                                                                           |
-| ------------- | :------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--api_key`   |    ✅    | Your Giant Bomb API key, can be found at https://www.giantbomb.com/api/.                                                                                                              |
-| `--show`      |    🔀    | Name of the Giant Bomb show to download, must be an exact match.<br>Mutually exclusive with `--video_id`.                                                                             |
-| `--video_id`  |    🔀    | Giant Bomb video ID, multiple can be separated by commas. IDs can be found in the video URL on the website, they are formatted as `12345-87654`.<br>Mutually exclusive with `--show`. |
-| `--dir`       |    ✅    | Directory the videos should be downloaded to. When using the `--show` option a subdirectory will be created for the selected show.                                                    |
-| `--quality`   |    ❌    | Quality to download videos in, will fall back to lower quality if selected is not available. Defaults to `highest`. Options are `low`, `high`, `hd` and `highest`.                    |
-| `--from_date` |    ❌    | Videos published before this date will not be downloaded. Formatted as `YYYY-MM-DD`. Ignored when downloading using `--video_id`.                                                     |
-| `--to_date`   |    ❌    | Videos published after this date will not be downloaded. Formatted as `YYYY-MM-DD`. Ignored when downloading using `--video_id`.                                                      |
-| `--mp3tag`    |    ❌    | Create a `.txt` file that can be used within the [Mp3tag](https://docs.mp3tag.de/converters/import-tags-from-text-files/) software to tag your videos for use in media libraries.     |
-| `--debug`     |    ❌    | Will output extra logging when enabled, can be useful for troubleshooting.                                                                                                            |
+| Option        | Required | Description                                                                                                                                                                                                                   |
+| ------------- | :------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--api_key`   |    ✅    | Your Giant Bomb API key, can be found at https://www.giantbomb.com/api/.                                                                                                                                                      |
+| `--show`      |    🔀    | Name of the Giant Bomb show to download, must be an exact match.<br>Mutually exclusive with `--video_id` and `--archive`.                                                                                                     |
+| `--video_id`  |    🔀    | Giant Bomb video ID, multiple can be separated by commas. IDs can be found in the video URL on the website, they are formatted as `12345-87654`.<br>Mutually exclusive with `--show` and `--archive`.                         |
+| `--archive`   |    🔀    | Enable archive mode, will download every video from the API one by one.<br>Mutually exclusive with `--show` and `--video_id`.                                                                                                 |
+| `--dir`       |    ✅    | Directory the videos should be downloaded to. When using the `--show` option a subdirectory will be created for the selected show.                                                                                            |
+| `--quality`   |    ❌    | Quality to download videos in, will fall back to lower quality if selected is not available. Defaults to `highest`. Options are `low`, `high`, `hd` and `highest`.                                                            |
+| `--from_date` |    ❌    | Videos published before this date will not be downloaded. Formatted as `YYYY-MM-DD`. Ignored when downloading using `--video_id`.                                                                                             |
+| `--to_date`   |    ❌    | Videos published after this date will not be downloaded. Formatted as `YYYY-MM-DD`. Ignored when downloading using `--video_id`.                                                                                              |
+| `--mp3tag`    |    ❌    | Create a `.txt` file that can be used within the [Mp3tag](https://docs.mp3tag.de/converters/import-tags-from-text-files/) software to tag your videos for use in media libraries. Ignored when downloading using `--archive`. |
+| `--debug`     |    ❌    | Will output extra logging when enabled, can be useful for troubleshooting.                                                                                                                                                    |
 
 ## Features
 

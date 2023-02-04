@@ -155,14 +155,26 @@ export default {
   },
 
   /**
+   * ARCHIVE
+   */
+
+  archiveInit: (): void => {
+    console.log(`Starting in archive mode, downloading all videos`);
+  },
+
+  pageRetrieve: (page: number): void => {
+    console.log(`Retrieving videos page ${cyan(page)}`);
+  },
+
+  /**
    * ERRORS
    */
 
-  errorShowAndVideo: (): void => {
+  errorModeSelection: (): void => {
     console.error(
-      `${red("Error:")} Either ${magenta("--show")} or ${magenta(
+      `${red("Error:")} Either ${magenta("--show")}, ${magenta(
         "--video_id"
-      )} option should be passed`
+      )} or ${magenta("--archive")} option should be passed`
     );
   },
 
@@ -223,6 +235,12 @@ export default {
       `\t${red("Error:")} Failed to retrieve video information: ${red(
         error.message
       )}`
+    );
+  },
+
+  errorVideosPageFailed: (error: RequestError): void => {
+    console.error(
+      `\t${red("Error:")} Failed to videos page:  ${red(error.message)}`
     );
   },
 
