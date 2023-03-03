@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.10.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.9.1...v1.10.0) (2023-03-03)
+
+
+### Features
+
+* add --archive option to download all videos ([e15b746](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/e15b74625249f474cd26aa5e92447005833b3df8))
+* improve readability of download tracking file: ([8f8e10b](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/8f8e10b65cad3e76828ecdadf3afd993aba0ae42))
+
 ### [1.9.1](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.9.0...v1.9.1) (2023-01-31)
 
 
