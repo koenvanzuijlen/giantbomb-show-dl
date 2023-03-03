@@ -160,14 +160,14 @@ const downloadShow = async (): Promise<void> => {
   if (show?.image?.original_url) {
     const imageExtension = path.extname(show.image.original_url);
     const imageTargetPath = path.join(directory, `image${imageExtension}`);
-    if (!tracker.isDownloaded("show_image")) {
+    if (!tracker.isDownloaded("show", "image")) {
       logger.fileDownload("show image", `image${imageExtension}`);
       const success = await api.downloadFile(
         show.image.original_url,
         imageTargetPath
       );
       if (success) {
-        tracker.markDownloaded("show_image");
+        tracker.markDownloaded("show", "image", show.title);
       }
     }
   }
@@ -176,14 +176,14 @@ const downloadShow = async (): Promise<void> => {
   if (show?.logo?.original_url) {
     const imageExtension = path.extname(show.logo.original_url);
     const imageTargetPath = path.join(directory, `logo${imageExtension}`);
-    if (!tracker.isDownloaded("show_logo")) {
+    if (!tracker.isDownloaded("show", "logo")) {
       logger.fileDownload("show logo", `logo${imageExtension}`);
       const success = await api.downloadFile(
         show.logo.original_url,
         imageTargetPath
       );
       if (success) {
-        tracker.markDownloaded("show_logo");
+        tracker.markDownloaded("show", "logo", show.title);
       }
     }
   }
@@ -342,10 +342,7 @@ const downloadVideo = async (
   }
 
   // Download video image
-  if (
-    video?.image?.original_url &&
-    !tracker.isDownloaded(`${video.id}_image`)
-  ) {
+  if (video?.image?.original_url && !tracker.isDownloaded(video.id, "image")) {
     const imageFilename = `${filename}${path.extname(
       video.image.original_url
     )}`;
@@ -353,11 +350,11 @@ const downloadVideo = async (
     logger.fileDownload("video image", imageFilename);
     const success = await api.downloadFile(video.image.original_url, imagePath);
     if (success) {
-      tracker.markDownloaded(`${video.id}_image`);
+      tracker.markDownloaded(video.id, "image", filename);
     }
   }
 
-  if (tracker.isDownloaded(video.id)) {
+  if (tracker.isDownloaded(video.id, "video")) {
     counts.skipped++;
     logger.videoSkipDownloaded(video.name);
     return;
@@ -409,7 +406,7 @@ const downloadVideo = async (
   );
   if (success) {
     counts.downloaded++;
-    tracker.markDownloaded(video.id);
+    tracker.markDownloaded(video.id, "video", filename);
   } else {
     counts.failed++;
   }
