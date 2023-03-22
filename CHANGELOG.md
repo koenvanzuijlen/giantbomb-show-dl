@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.10.1](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.10.0...v1.10.1) (2023-03-22)
+
+
+### Bug Fixes
+
+* don't create subdir & metadata when already downloaded ([e240ea7](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/e240ea7907f2c5d417e3e226a4a750f40d8548e4))
+
 ## [1.10.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.9.1...v1.10.0) (2023-03-03)
 
 
