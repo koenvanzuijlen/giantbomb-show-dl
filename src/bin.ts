@@ -320,20 +320,26 @@ const downloadVideo = async (
     replacement: "_",
   });
 
+  const willDownload =
+    !tracker.isDownloaded(video.id, "video") ||
+    !tracker.isDownloaded(video.id, "image");
+
   // Create a subdirectory per video if enabled
   let videoDirectory = directory;
   if (createSubDirectory) {
     videoDirectory = path.join(directory, filename);
-    if (!fs.existsSync(videoDirectory)) {
-      fs.mkdirSync(videoDirectory);
+    if (!fs.existsSync(videoDirectory) && willDownload) {
+      fs.mkdirSync(videoDirectory, { recursive: true });
     }
   }
 
   // Write metadata to JSON file
-  const metadataPath = path.join(videoDirectory, `${filename}.metadata.json`);
-  if (!fs.existsSync(metadataPath)) {
-    logger.debug(`Writing metadata for video`);
-    fs.writeFileSync(metadataPath, JSON.stringify(video, null, 2));
+  if (willDownload) {
+    const metadataPath = path.join(videoDirectory, `${filename}.metadata.json`);
+    if (!fs.existsSync(metadataPath)) {
+      logger.debug(`Writing metadata for video`);
+      fs.writeFileSync(metadataPath, JSON.stringify(video, null, 2));
+    }
   }
 
   // Add data for Mp3tag
