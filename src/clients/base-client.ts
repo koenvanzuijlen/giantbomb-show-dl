@@ -1,3 +1,5 @@
+import dns from "dns";
+
 const MS_BETWEEN_REQUEST = 1100; // Giant Bomb limits to 1 request a second
 
 export default class BaseClient {
@@ -5,6 +7,7 @@ export default class BaseClient {
   protected readonly baseURL = "https://www.giantbomb.com/api/";
 
   constructor(apiKey: string) {
+    dns.setDefaultResultOrder("ipv4first");
     this.apiKey = apiKey;
   }
 

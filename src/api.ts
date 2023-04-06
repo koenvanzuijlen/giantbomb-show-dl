@@ -1,4 +1,4 @@
-import FetchClient from "./clients/client-fetch.js";
+import AxiosClient from "./clients/client-axios.js";
 import { RequestError } from "./clients/errors.js";
 import logger from "./logger.js";
 
@@ -41,7 +41,7 @@ type VideosResponse = {
   results: Video[];
 };
 
-export default class GiantBombAPI extends FetchClient {
+export default class GiantBombAPI extends AxiosClient {
   constructor(apiKey: string) {
     super(apiKey);
   }
