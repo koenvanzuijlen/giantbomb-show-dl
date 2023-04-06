@@ -3,7 +3,6 @@ import chalk from "chalk";
 import { readableFilesize } from "./speedtracker.js";
 
 import type { Dayjs } from "dayjs";
-import type { RequestError } from "got";
 import type { DownloadCounter } from "./bin.js";
 
 const { cyan, gray, green, magenta, red, yellow } = chalk;
@@ -73,8 +72,7 @@ export default {
     total: number,
     speed: string
   ): void => {
-    const tenthsDone = Math.floor(percent * 10);
-    percent = Math.floor(percent * 100);
+    const tenthsDone = Math.floor(percent / 10);
     const color = percent === 100 ? green : yellow;
 
     readline.cursorTo(process.stdout, 0);
@@ -206,7 +204,7 @@ export default {
     );
   },
 
-  errorShowCallFailed: (error: RequestError): void => {
+  errorShowCallFailed: (error: Error): void => {
     console.error(
       `\t${red("Error:")} Failed to retrieve show information:  ${red(
         error.message
@@ -214,7 +212,7 @@ export default {
     );
   },
 
-  errorEpisodeCallFailed: (error: RequestError): void => {
+  errorEpisodeCallFailed: (error: Error): void => {
     console.error(
       `\t${red("Error:")} Failed to retrieve episode information:  ${red(
         error.message
@@ -230,7 +228,7 @@ export default {
     );
   },
 
-  errorVideoCallFailed: (error: RequestError): void => {
+  errorVideoCallFailed: (error: Error): void => {
     console.error(
       `\t${red("Error:")} Failed to retrieve video information: ${red(
         error.message
@@ -238,13 +236,13 @@ export default {
     );
   },
 
-  errorVideosPageFailed: (error: RequestError): void => {
+  errorVideosPageFailed: (error: Error): void => {
     console.error(
       `\t${red("Error:")} Failed to videos page:  ${red(error.message)}`
     );
   },
 
-  errorDownloadFailed: (error: RequestError): void => {
+  errorDownloadFailed: (error: Error): void => {
     console.error(`\t${red("Error:")} Download failed:  ${red(error.message)}`);
   },
 };

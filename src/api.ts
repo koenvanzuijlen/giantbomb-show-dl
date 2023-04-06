@@ -1,13 +1,7 @@
-import fs from "fs";
-import { pipeline } from "stream/promises";
-
-import got, { RequestError } from "got";
-
+import FetchClient from "./clients/client-fetch.js";
+import { RequestError } from "./clients/errors.js";
 import logger from "./logger.js";
-import SpeedTracker from "./speedtracker.js";
 
-const BASE_URL = "https://www.giantbomb.com/api/";
-const MS_BETWEEN_REQUEST = 1100;
 const MAX_PAGES = 5;
 const PAGE_LIMIT = 100;
 
@@ -47,85 +41,9 @@ type VideosResponse = {
   results: Video[];
 };
 
-export default class GiantBombAPI {
-  private readonly apiKey: string;
-
-  lastCall = 0;
-
+export default class GiantBombAPI extends FetchClient {
   constructor(apiKey: string) {
-    this.apiKey = apiKey;
-  }
-
-  private async rateLimit() {
-    if (this.lastCall > Date.now() - MS_BETWEEN_REQUEST) {
-      await new Promise((r) => setTimeout(r, MS_BETWEEN_REQUEST));
-    }
-    this.lastCall = Date.now();
-  }
-
-  private async request<T>(
-    endpoint: string,
-    parameters: { [key: string]: string | number }
-  ): Promise<T> {
-    await this.rateLimit();
-
-    logger.debug(`Requesting ${BASE_URL}${endpoint}/`);
-
-    return await got(`${BASE_URL}${endpoint}/`, {
-      searchParams: {
-        ...parameters,
-        api_key: this.apiKey,
-        format: "json",
-      },
-      timeout: { request: 10000 },
-    }).json<T>();
-  }
-
-  async checkIfExists(url: string): Promise<boolean> {
-    await this.rateLimit();
-
-    logger.debug(`Requesting HEAD for ${url}`);
-    try {
-      await got.head(url, {
-        searchParams: {
-          api_key: this.apiKey,
-        },
-        timeout: { request: 10000 },
-      });
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  async downloadFile(url: string, targetPath: string): Promise<boolean> {
-    await this.rateLimit();
-
-    logger.debug(`Downloading ${url}`);
-    const speedTracker = new SpeedTracker();
-    try {
-      await pipeline(
-        got
-          .stream(url, {
-            searchParams: {
-              api_key: this.apiKey,
-            },
-          })
-          .on("downloadProgress", ({ percent, transferred, total }) => {
-            let speed = speedTracker.getCurrentSpeed(transferred, total);
-            if (transferred === total) {
-              speed = speedTracker.getAverageSpeed();
-            }
-            logger.downloadProgress(percent, transferred, total, speed);
-          }),
-        fs.createWriteStream(targetPath)
-      );
-      process.stdout.write("\n");
-      return true;
-    } catch (error) {
-      logger.errorDownloadFailed(error as RequestError);
-      return false;
-    }
+    super(apiKey);
   }
 
   async getShowInfo(showName: string): Promise<Show | undefined> {
@@ -154,7 +72,7 @@ export default class GiantBombAPI {
         logger.errorShowNotFound(showName);
       }
     } catch (error) {
-      logger.errorShowCallFailed(error as RequestError);
+      logger.errorShowCallFailed(error as Error);
     }
     return show;
   }
@@ -180,7 +98,7 @@ export default class GiantBombAPI {
         page++;
       }
     } catch (error) {
-      logger.errorEpisodeCallFailed(error as RequestError);
+      logger.errorEpisodeCallFailed(error as Error);
       return null;
     }
 
@@ -198,7 +116,7 @@ export default class GiantBombAPI {
       });
       return response.results;
     } catch (error) {
-      logger.errorVideosPageFailed(error as RequestError);
+      logger.errorVideosPageFailed(error as Error);
       return null;
     }
   }
@@ -213,11 +131,10 @@ export default class GiantBombAPI {
       );
       return response.results;
     } catch (error) {
-      const statusCode = (error as RequestError).response?.statusCode;
-      if (statusCode === 404) {
+      if (error instanceof RequestError && error.statusCode === 404) {
         logger.errorVideoNotFound(videoId);
       } else {
-        logger.errorVideoCallFailed(error as RequestError);
+        logger.errorVideoCallFailed(error as Error);
       }
       return null;
     }
