@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.10.1...v2.0.0) (2023-04-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* dropped support for Node.js version lower than 18
+
+### Features
+
+* add axios client for API calls ([01a2f65](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/01a2f652a880a09d11c84a77789bef47d4bf57bd))
+* add disabled fetch client for API calls ([c0167e0](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/c0167e0e6681ec3ee3ace768444d71aa57da1180))
+
+
+### Build System
+
+* dropped support for Node.js version lower than 18 ([0c402dd](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/0c402ddc31ead5118e17ac1e695bf212fe42b02f))
+
 ### [1.10.1](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.10.0...v1.10.1) (2023-03-22)
 
 
