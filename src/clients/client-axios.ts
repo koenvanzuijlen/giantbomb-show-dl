@@ -94,7 +94,7 @@ export default class AxiosClient extends BaseClient {
             speed = speedTracker.getAverageSpeed();
           }
           logger.downloadProgress(
-            (progressEvent.progress ?? 0) * 100,
+            Math.floor((progressEvent.progress ?? 0) * 100),
             progressEvent.loaded,
             progressEvent.total ?? 0,
             speed

@@ -206,7 +206,7 @@ export default {
 
   errorShowCallFailed: (error: Error): void => {
     console.error(
-      `\t${red("Error:")} Failed to retrieve show information:  ${red(
+      `\t${red("Error:")} Failed to retrieve show information: ${red(
         error.message
       )}`
     );
@@ -214,7 +214,7 @@ export default {
 
   errorEpisodeCallFailed: (error: Error): void => {
     console.error(
-      `\t${red("Error:")} Failed to retrieve episode information:  ${red(
+      `\t${red("Error:")} Failed to retrieve episode information: ${red(
         error.message
       )}`
     );
@@ -238,11 +238,11 @@ export default {
 
   errorVideosPageFailed: (error: Error): void => {
     console.error(
-      `\t${red("Error:")} Failed to videos page:  ${red(error.message)}`
+      `\t${red("Error:")} Failed to videos page: ${red(error.message)}`
     );
   },
 
   errorDownloadFailed: (error: Error): void => {
-    console.error(`\t${red("Error:")} Download failed:  ${red(error.message)}`);
+    console.error(`\t${red("Error:")} Download failed: ${red(error.message)}`);
   },
 };
