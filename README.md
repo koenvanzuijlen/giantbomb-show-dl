@@ -6,7 +6,7 @@ Command line tool to download complete Giant Bomb shows or a list of separate vi
 
 ## Requirements
 
-- [Node.js](https://nodejs.org/) (version 15 or later)
+- [Node.js](https://nodejs.org/) (version 18 or later)
 
 ## How to
 
