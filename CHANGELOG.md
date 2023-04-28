@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v2.0.0...v2.1.0) (2023-04-28)
+
+
+### Features
+
+* gracefully exit on interupt ([caab0fe](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/caab0fe4a3c93e1395a17e509c9c9c9e558bc2a4))
+* use date filters in api request ([b4f5625](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/b4f5625836f610b46199ee809265666930f96bc5))
+
 ## [2.0.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v1.10.1...v2.0.0) (2023-04-06)
 
 
