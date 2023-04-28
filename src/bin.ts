@@ -12,7 +12,7 @@ import DownloadTracker from "./downloadtracker.js";
 import logger from "./logger.js";
 import Mp3tag from "./mp3tag.js";
 
-const CURRENT_VERSION = "2.0.0"; // {x-release-please-version}
+const CURRENT_VERSION = "2.1.0"; // {x-release-please-version}
 
 const QUALITY_LOW = "low";
 const QUALITY_HIGH = "high";
