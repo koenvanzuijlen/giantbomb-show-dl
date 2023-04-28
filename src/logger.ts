@@ -165,6 +165,25 @@ export default {
   },
 
   /**
+   * INTERUPT
+   */
+  interupt: (counts: DownloadCounter): void => {
+    console.log(
+      green(`💣 ${cyan("giantbomb-show-dl")} run interupted, aborting 💣`)
+    );
+    if (counts.failed > 0) {
+      console.error(
+        red(`${counts.failed} downloads failed! Re-run the command to retry.`)
+      );
+    }
+    console.log(
+      `${green(counts.downloaded)} video(s) downloaded, ${yellow(
+        counts.skipped
+      )} video(s) skipped`
+    );
+  },
+
+  /**
    * ERRORS
    */
 

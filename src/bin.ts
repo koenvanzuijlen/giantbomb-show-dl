@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from "fs";
 import path from "path";
+import process from "process";
 
 import { Command } from "commander";
 import dayjs from "dayjs";
@@ -205,6 +206,11 @@ const downloadShow = async (): Promise<void> => {
     failed: 0,
   };
 
+  process.on("SIGINT", () => {
+    logger.interupt(counts);
+    process.exit(0);
+  });
+
   for (const video of videos) {
     await downloadVideo(video, tracker, counts, { fromDate, toDate, mp3tag });
   }
@@ -228,6 +234,11 @@ const downloadVideosById = async (): Promise<void> => {
     skipped: 0,
     failed: 0,
   };
+
+  process.on("SIGINT", () => {
+    logger.interupt(counts);
+    process.exit(0);
+  });
 
   for (const videoId of videoIds) {
     const video = await api.getVideoById(videoId);
@@ -260,6 +271,11 @@ const downloadArchive = async (): Promise<void> => {
     skipped: 0,
     failed: 0,
   };
+
+  process.on("SIGINT", () => {
+    logger.interupt(counts);
+    process.exit(0);
+  });
 
   let page = 0;
   let foundVideos = true;
