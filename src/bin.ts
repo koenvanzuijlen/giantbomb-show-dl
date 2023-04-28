@@ -194,7 +194,7 @@ const downloadShow = async (): Promise<void> => {
     mp3tag = new Mp3tag(directory);
   }
 
-  const videos = await api.getShowVideos(show);
+  const videos = await api.getShowVideos(show, { fromDate, toDate });
   if (videos === null) {
     process.exit(1);
   }
@@ -265,7 +265,7 @@ const downloadArchive = async (): Promise<void> => {
   let foundVideos = true;
   let videoCount = 0;
   while (foundVideos) {
-    const videos = await api.getAllVideosPage(page);
+    const videos = await api.getAllVideosPage(page, { fromDate, toDate });
     if (videos === null || videos.length === 0) {
       foundVideos = false;
       continue;

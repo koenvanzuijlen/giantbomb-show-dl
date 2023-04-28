@@ -1,9 +1,14 @@
+import type dayjs from "dayjs";
 import AxiosClient from "./clients/client-axios.js";
 import { RequestError } from "./clients/errors.js";
 import logger from "./logger.js";
 
 const MAX_PAGES = 5;
 const PAGE_LIMIT = 100;
+
+const DATE_FILTER_FORMAT = "YYYY-MM-DD HH:mm:ss";
+const FALLBACK_FROM_DATE_FILTER = "0000-01-01 00:00:00";
+const FALLBACK_TO_DATE_FILTER = "9999-01-01 00:00:00";
 
 type Show = {
   id: number;
@@ -46,6 +51,35 @@ export default class GiantBombAPI extends AxiosClient {
     super(apiKey);
   }
 
+  private getDateFilterQuery(
+    fromDate?: dayjs.Dayjs,
+    toDate?: dayjs.Dayjs
+  ): string {
+    if (!fromDate && !toDate) {
+      return "";
+    }
+
+    let fromDateQuery = FALLBACK_FROM_DATE_FILTER;
+    let toDateQuery = FALLBACK_TO_DATE_FILTER;
+    if (fromDate) {
+      fromDateQuery = fromDate
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .format(DATE_FILTER_FORMAT);
+    }
+    if (toDate) {
+      toDateQuery = toDate
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .add(1, "day")
+        .format(DATE_FILTER_FORMAT);
+    }
+
+    return `publish_date:${fromDateQuery}|${toDateQuery}`;
+  }
+
   async getShowInfo(showName: string): Promise<Show | undefined> {
     logger.showRetrieve(showName);
     let show: Show | undefined;
@@ -77,11 +111,20 @@ export default class GiantBombAPI extends AxiosClient {
     return show;
   }
 
-  async getShowVideos(show: Show): Promise<Video[] | null> {
+  async getShowVideos(
+    show: Show,
+    { fromDate, toDate }: { fromDate?: dayjs.Dayjs; toDate?: dayjs.Dayjs }
+  ): Promise<Video[] | null> {
     logger.episodeRetrieve(show.title);
     let page = 0;
     let foundVideos = true;
     let videos: Video[] = [];
+
+    let filter = `video_show:${show.id}`;
+    const dateFilter = this.getDateFilterQuery(fromDate, toDate);
+    if (dateFilter.length > 1) {
+      filter += `,${dateFilter}`;
+    }
 
     try {
       while (foundVideos && page < MAX_PAGES) {
@@ -91,7 +134,7 @@ export default class GiantBombAPI extends AxiosClient {
         const response = await this.request<VideosResponse>("videos", {
           offset: page * PAGE_LIMIT,
           sort: "publish_date:asc",
-          filter: `video_show:${show.id}`,
+          filter,
         });
         foundVideos = response.results.length > 0;
         videos = [...videos, ...response.results];
@@ -106,13 +149,17 @@ export default class GiantBombAPI extends AxiosClient {
     return videos;
   }
 
-  async getAllVideosPage(page: number): Promise<Video[] | null> {
+  async getAllVideosPage(
+    page: number,
+    { fromDate, toDate }: { fromDate?: dayjs.Dayjs; toDate?: dayjs.Dayjs }
+  ): Promise<Video[] | null> {
     logger.pageRetrieve(page);
 
     try {
       const response = await this.request<VideosResponse>("videos", {
         offset: page * PAGE_LIMIT,
         sort: "publish_date:asc",
+        filter: this.getDateFilterQuery(fromDate, toDate),
       });
       return response.results;
     } catch (error) {

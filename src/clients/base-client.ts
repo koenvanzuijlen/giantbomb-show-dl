@@ -11,7 +11,7 @@ export default class BaseClient {
     this.apiKey = apiKey;
   }
 
-  protected async rateLimit() {
-    await new Promise((r) => setTimeout(r, MS_BETWEEN_REQUEST));
+  protected rateLimit(): Promise<void> {
+    return new Promise((r) => setTimeout(r, MS_BETWEEN_REQUEST));
   }
 }
