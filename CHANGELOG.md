@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v2.1.0...v2.2.0) (2023-05-03)
+
+
+### Features
+
+* track completed pages for --archive ([#6](https://github.com/koenvanzuijlen/giantbomb-show-dl/issues/6)) ([2314fee](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/2314fee89c341fe25aedb0c7db10a83c150a42b0))
+
 ## [2.1.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v2.0.0...v2.1.0) (2023-04-28)
 
 
