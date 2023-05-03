@@ -149,17 +149,13 @@ export default class GiantBombAPI extends AxiosClient {
     return videos;
   }
 
-  async getAllVideosPage(
-    page: number,
-    { fromDate, toDate }: { fromDate?: dayjs.Dayjs; toDate?: dayjs.Dayjs }
-  ): Promise<Video[] | null> {
+  async getAllVideosPage(page: number): Promise<Video[] | null> {
     logger.pageRetrieve(page);
 
     try {
       const response = await this.request<VideosResponse>("videos", {
         offset: page * PAGE_LIMIT,
         sort: "publish_date:asc",
-        filter: this.getDateFilterQuery(fromDate, toDate),
       });
       return response.results;
     } catch (error) {

@@ -164,6 +164,10 @@ export default {
     console.log(`Retrieving videos page ${cyan(page)}`);
   },
 
+  pageSkip: (page: number): void => {
+    console.log(`Skipping videos page ${cyan(page)}, already fully downloaded`);
+  },
+
   /**
    * INTERUPT
    */
