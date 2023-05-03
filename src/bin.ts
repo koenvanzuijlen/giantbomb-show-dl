@@ -255,10 +255,6 @@ const downloadVideosById = async (): Promise<void> => {
 const downloadArchive = async (): Promise<void> => {
   logger.archiveInit();
 
-  // Parse passed dates if any
-  const fromDate = parseDate(program.from_date);
-  const toDate = parseDate(program.to_date);
-
   // Add archive path to the directory
   directory = path.join(directory, "_archive_");
   if (!fs.existsSync(directory)) {
@@ -281,19 +277,31 @@ const downloadArchive = async (): Promise<void> => {
   let foundVideos = true;
   let videoCount = 0;
   while (foundVideos) {
-    const videos = await api.getAllVideosPage(page, { fromDate, toDate });
-    if (videos === null || videos.length === 0) {
-      foundVideos = false;
-      continue;
-    }
-    videoCount += videos.length;
+    if (!tracker.isDownloaded(`archive_page_${page}`, "video")) {
+      const videos = await api.getAllVideosPage(page);
+      if (videos === null || videos.length === 0) {
+        foundVideos = false;
+        continue;
+      }
+      videoCount += videos.length;
 
-    for (const video of videos) {
-      await downloadVideo(video, tracker, counts, {
-        fromDate,
-        toDate,
-        createSubDirectory: true,
-      });
+      const failedBeforePage = counts.failed;
+      for (const video of videos) {
+        await downloadVideo(video, tracker, counts, {
+          createSubDirectory: true,
+        });
+      }
+      // If failed count didn't increase mark this page as completed for future
+      // runs.
+      if (counts.failed === failedBeforePage) {
+        tracker.markDownloaded(
+          `archive_page_${page}`,
+          "video",
+          `Archive page ${page}`
+        );
+      }
+    } else {
+      logger.pageSkip(page);
     }
     page++;
   }
