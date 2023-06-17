@@ -86,19 +86,22 @@ export default class AxiosClient extends BaseClient {
         timeout: REQUEST_TIMEOUT,
         responseType: "stream",
         onDownloadProgress: (progressEvent) => {
-          let speed = speedTracker.getCurrentSpeed(
-            progressEvent.loaded,
-            progressEvent.total ?? 0
-          );
-          if (progressEvent.loaded === (progressEvent.total ?? 0)) {
-            speed = speedTracker.getAverageSpeed();
+          // Minimum loaded to prevent showing logs for files that do not exist.
+          if (progressEvent.loaded >= 500) {
+            let speed = speedTracker.getCurrentSpeed(
+              progressEvent.loaded,
+              progressEvent.total ?? 0
+            );
+            if (progressEvent.loaded === (progressEvent.total ?? 0)) {
+              speed = speedTracker.getAverageSpeed();
+            }
+            logger.downloadProgress(
+              Math.floor((progressEvent.progress ?? 0) * 100),
+              progressEvent.loaded,
+              progressEvent.total ?? 0,
+              speed
+            );
           }
-          logger.downloadProgress(
-            Math.floor((progressEvent.progress ?? 0) * 100),
-            progressEvent.loaded,
-            progressEvent.total ?? 0,
-            speed
-          );
         },
       });
 
@@ -106,12 +109,17 @@ export default class AxiosClient extends BaseClient {
 
       await pipeline(response.data, fileStream);
     } catch (error) {
-      let errorToLog = error as Error;
-      if (axios.isAxiosError(error) && error.response) {
+      let errorToLog: Error;
+
+      if (axios.isAxiosError(error)) {
         errorToLog = new RequestError(
-          String(error.response.data),
-          error.response.status
+          error.message,
+          error.response?.status ?? 0
         );
+      } else if (error instanceof Error) {
+        errorToLog = error;
+      } else {
+        errorToLog = new Error("Video download failed for unknown reason");
       }
       logger.errorDownloadFailed(errorToLog);
       return false;
