@@ -368,7 +368,7 @@ const downloadVideo = async (
 
   // Add data for Mp3tag
   if (mp3tag) {
-    mp3tag.addEntry(video.publish_date.substring(0, 10), video.name);
+    mp3tag.addEntry([video.publish_date.substring(0, 10), video.name, video.deck]);
   }
 
   // Download video image

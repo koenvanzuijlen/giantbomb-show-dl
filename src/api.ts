@@ -25,6 +25,7 @@ export type Video = {
   id: number;
   guid: string;
   name: string;
+  deck: string;
   publish_date: string;
   low_url?: string;
   high_url?: string;
