@@ -1,13 +1,13 @@
 import fs from "fs";
 import { pipeline } from "node:stream/promises";
-import axios from "axios";
+import axios, { RawAxiosRequestHeaders } from "axios";
 
 import BaseClient from "./base-client.js";
 import { RequestError } from "./errors.js";
 import logger from "../logger.js";
 import SpeedTracker from "../speedtracker.js";
 
-const REQUEST_TIMEOUT = 5000;
+const REQUEST_TIMEOUT = 10000;
 
 export default class AxiosClient extends BaseClient {
   constructor(apiKey: string) {
@@ -69,7 +69,11 @@ export default class AxiosClient extends BaseClient {
     }
   }
 
-  async downloadFile(url: string, targetPath: string): Promise<boolean> {
+  async downloadFile(
+    url: string,
+    targetPath: string,
+    rangeStart = -1,
+  ): Promise<boolean> {
     await this.rateLimit();
 
     logger.debug(`Downloading ${url}`);
@@ -78,8 +82,15 @@ export default class AxiosClient extends BaseClient {
     const urlWithParams = new URL(url);
     urlWithParams.searchParams.append("api_key", this.apiKey);
 
+    // If file is already partially downloaded, resume it
+    const headers: RawAxiosRequestHeaders = {};
+    if (rangeStart >= 0) {
+      headers.Range = `bytes=${rangeStart}-`;
+    }
+
     try {
       const response = await axios.get(url, {
+        headers,
         params: {
           api_key: this.apiKey,
         },
@@ -105,7 +116,7 @@ export default class AxiosClient extends BaseClient {
         },
       });
 
-      const fileStream = fs.createWriteStream(targetPath);
+      const fileStream = fs.createWriteStream(targetPath, { flags: "a" });
 
       await pipeline(response.data, fileStream);
     } catch (error) {

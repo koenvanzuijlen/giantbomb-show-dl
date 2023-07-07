@@ -51,6 +51,10 @@ Will keep track of which files are downloaded successfully. These files will not
 
 To reset download tracking remove the `downloaded.json` file from the relative directory.
 
+### Download resuming
+
+If a download is interrupted this tool will resume where the download previously ended on the next attempt.
+
 ### Save images and metadata
 
 This tool also downloads the image(s) and metadata for each show and video. This data can be used to enhance your library in your media server of choice.

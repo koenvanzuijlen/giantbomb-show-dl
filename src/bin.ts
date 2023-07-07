@@ -434,9 +434,17 @@ const downloadVideo = async (
     }
   }
 
+  // Retrieve already downloaed bytes
+  const filePath = path.join(videoDirectory, videoFilename);
+  let currentFileBytes = -1;
+  if (fs.existsSync(filePath)) {
+    currentFileBytes = fs.statSync(filePath).size;
+  }
+
   const success = await api.downloadFile(
     urlToDownload,
-    path.join(videoDirectory, videoFilename),
+    filePath,
+    currentFileBytes,
   );
   if (success) {
     counts.downloaded++;
