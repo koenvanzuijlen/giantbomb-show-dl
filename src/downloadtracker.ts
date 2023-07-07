@@ -22,7 +22,7 @@ export default class DownloadTracker {
 
     if (fs.existsSync(this.trackingFile)) {
       let downloadedData: JSONFormat | LegacyJSONFormat = JSON.parse(
-        String(fs.readFileSync(this.trackingFile))
+        String(fs.readFileSync(this.trackingFile)),
       );
 
       if (this.isLegacyFormattedFile(downloadedData)) {
@@ -44,7 +44,7 @@ export default class DownloadTracker {
    * Check if the JSON file is a legacy one.
    */
   private isLegacyFormattedFile(
-    downloadedData: JSONFormat | LegacyJSONFormat
+    downloadedData: JSONFormat | LegacyJSONFormat,
   ): downloadedData is LegacyJSONFormat {
     return Array.isArray(downloadedData);
   }
@@ -87,7 +87,7 @@ export default class DownloadTracker {
   private writeFile(): void {
     fs.writeFileSync(
       this.trackingFile,
-      JSON.stringify(this.downloaded, undefined, 2)
+      JSON.stringify(this.downloaded, undefined, 2),
     );
   }
 

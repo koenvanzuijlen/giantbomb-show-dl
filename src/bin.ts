@@ -34,33 +34,33 @@ export type DownloadCounter = {
 const program = new Command()
   .option(
     "--api_key <input>",
-    "Personal Giant Bomb API key, retrieved from https://www.giantbomb.com/api/"
+    "Personal Giant Bomb API key, retrieved from https://www.giantbomb.com/api/",
   )
   .option("--show <input>", "Giant Bomb show name")
   .option("--video_id <input>", "Giant Bomb video ID(s), comma separated")
   .option("--archive", "Enable archive mode, download all videos 1 by 1")
   .option(
     "--dir <input>",
-    "Directory where shows should be saved, a subdirectory will automatically be created for each show"
+    "Directory where shows should be saved, a subdirectory will automatically be created for each show",
   )
   .option(
     "--quality <input>",
     `Video quality to download, will download lower quality if not available. (options: ${QUALITY_OPTIONS.map(
-      (quality) => `"${quality}"`
+      (quality) => `"${quality}"`,
     ).join(", ")})`,
-    "highest"
+    "highest",
   )
   .option(
     "--from_date <input>",
-    "If added videos from before this date will not be downloaded. Formatted as YYYY-MM-DD."
+    "If added videos from before this date will not be downloaded. Formatted as YYYY-MM-DD.",
   )
   .option(
     "--to_date <input>",
-    "If added videos from after this date will not be downloaded. Formatted as YYYY-MM-DD."
+    "If added videos from after this date will not be downloaded. Formatted as YYYY-MM-DD.",
   )
   .option(
     "--mp3tag",
-    "Create a text file that can be used in Mp3tag to add video tags"
+    "Create a text file that can be used in Mp3tag to add video tags",
   )
   .option("--debug", "Output extra logging, may be useful for troubleshooting")
   .version(CURRENT_VERSION)
@@ -165,7 +165,7 @@ const downloadShow = async (): Promise<void> => {
       logger.fileDownload("show image", `image${imageExtension}`);
       const success = await api.downloadFile(
         show.image.original_url,
-        imageTargetPath
+        imageTargetPath,
       );
       if (success) {
         tracker.markDownloaded("show", "image", show.title);
@@ -181,7 +181,7 @@ const downloadShow = async (): Promise<void> => {
       logger.fileDownload("show logo", `logo${imageExtension}`);
       const success = await api.downloadFile(
         show.logo.original_url,
-        imageTargetPath
+        imageTargetPath,
       );
       if (success) {
         tracker.markDownloaded("show", "logo", show.title);
@@ -297,7 +297,7 @@ const downloadArchive = async (): Promise<void> => {
         tracker.markDownloaded(
           `archive_page_${page}`,
           "video",
-          `Archive page ${page}`
+          `Archive page ${page}`,
         );
       }
     } else {
@@ -323,7 +323,7 @@ const downloadVideo = async (
     toDate?: dayjs.Dayjs;
     mp3tag?: Mp3tag;
     createSubDirectory?: boolean;
-  } = {}
+  } = {},
 ): Promise<void> => {
   logger.videoDownloadIntro(video.name);
   const publishDate = dayjs(video.publish_date, "YYYY-MM-DD");
@@ -368,13 +368,17 @@ const downloadVideo = async (
 
   // Add data for Mp3tag
   if (mp3tag) {
-    mp3tag.addEntry([video.publish_date.substring(0, 10), video.name, video.deck]);
+    mp3tag.addEntry([
+      video.publish_date.substring(0, 10),
+      video.name,
+      video.deck,
+    ]);
   }
 
   // Download video image
   if (video?.image?.original_url && !tracker.isDownloaded(video.id, "image")) {
     const imageFilename = `${filename}${path.extname(
-      video.image.original_url
+      video.image.original_url,
     )}`;
     const imagePath = path.join(videoDirectory, imageFilename);
     logger.fileDownload("video image", imageFilename);
@@ -420,7 +424,7 @@ const downloadVideo = async (
         continue;
       }
       const maxQualityUrlExists = await api.checkIfExists(
-        possibleMaxQualityUrl
+        possibleMaxQualityUrl,
       );
       if (maxQualityUrlExists) {
         logger.debug("Found 8k bitrate video, downloading that");
@@ -432,7 +436,7 @@ const downloadVideo = async (
 
   const success = await api.downloadFile(
     urlToDownload,
-    path.join(videoDirectory, videoFilename)
+    path.join(videoDirectory, videoFilename),
   );
   if (success) {
     counts.downloaded++;

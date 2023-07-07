@@ -65,7 +65,7 @@ export default class SpeedTracker {
     const secondsLeft = Math.round((total - transferred) / bytesPerSecond);
 
     return `${chalk.magenta(
-      `${readableFilesize(bytesPerSecond)}/s`
+      `${readableFilesize(bytesPerSecond)}/s`,
     )} about ${chalk.magenta(readableTime(secondsLeft))} remaining`;
   }
 
@@ -82,13 +82,13 @@ export default class SpeedTracker {
       if (secondsDownloaded > 0) {
         const bytesTransferred = lastLog.transferred - firstLog.transferred;
         bytesPerSecond = Math.round(
-          bytesTransferred / (secondsDownloaded || 1)
+          bytesTransferred / (secondsDownloaded || 1),
         );
       }
     }
 
     return `avg. ${chalk.magenta(
-      `${readableFilesize(bytesPerSecond)}/s`
+      `${readableFilesize(bytesPerSecond)}/s`,
     )} in ${chalk.magenta(readableTime(secondsDownloaded))}`;
   }
 }

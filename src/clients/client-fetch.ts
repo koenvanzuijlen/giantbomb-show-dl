@@ -12,7 +12,7 @@ export default class FetchClient extends BaseClient {
 
   protected async request<T>(
     endpoint: string,
-    parameters: { [key: string]: string | number }
+    parameters: { [key: string]: string | number },
   ): Promise<T> {
     await this.rateLimit();
 
@@ -20,7 +20,7 @@ export default class FetchClient extends BaseClient {
 
     const url = new URL(`${this.baseURL}${endpoint}/`);
     Object.keys(parameters).forEach((key) =>
-      url.searchParams.append(key, String(parameters[key]))
+      url.searchParams.append(key, String(parameters[key])),
     );
     url.searchParams.append("api_key", this.apiKey);
     url.searchParams.append("format", "json");
@@ -75,7 +75,7 @@ export default class FetchClient extends BaseClient {
       if (!response.ok) {
         const errorBody = await response.text();
         logger.errorDownloadFailed(
-          new RequestError(errorBody, response.status)
+          new RequestError(errorBody, response.status),
         );
         return false;
       }
@@ -85,7 +85,7 @@ export default class FetchClient extends BaseClient {
       }
 
       const totalBytes = parseInt(
-        response.headers.get("Content-Length") || "0"
+        response.headers.get("Content-Length") || "0",
       );
       let transferredBytes = 0;
 
@@ -105,7 +105,7 @@ export default class FetchClient extends BaseClient {
           const percent = Math.floor((transferredBytes / totalBytes) * 100);
           let speed = speedTracker.getCurrentSpeed(
             transferredBytes,
-            totalBytes
+            totalBytes,
           );
           if (transferredBytes === totalBytes) {
             speed = speedTracker.getAverageSpeed();
@@ -121,7 +121,7 @@ export default class FetchClient extends BaseClient {
       logger.errorDownloadFailed(
         error instanceof TypeError
           ? new Error(`${error.message}: ${(error as any).cause.message}`)
-          : (error as Error)
+          : (error as Error),
       );
       return false;
     }

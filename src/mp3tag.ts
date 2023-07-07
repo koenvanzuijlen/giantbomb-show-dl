@@ -12,7 +12,7 @@ export default class Mp3tag {
 
   addEntry(fields: string[]) {
     const fd = fs.openSync(this.filePath, "a");
-    fs.writeSync(fd, fields.join(';') + "\n");
+    fs.writeSync(fd, fields.join(";") + "\n");
     fs.closeSync(fd);
   }
 }

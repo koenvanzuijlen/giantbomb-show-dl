@@ -16,7 +16,7 @@ export default class AxiosClient extends BaseClient {
 
   protected async request<T>(
     endpoint: string,
-    parameters: { [key: string]: string | number }
+    parameters: { [key: string]: string | number },
   ): Promise<T> {
     await this.rateLimit();
 
@@ -24,7 +24,7 @@ export default class AxiosClient extends BaseClient {
 
     const url = new URL(`${this.baseURL}${endpoint}/`);
     Object.keys(parameters).forEach((key) =>
-      url.searchParams.append(key, String(parameters[key]))
+      url.searchParams.append(key, String(parameters[key])),
     );
     url.searchParams.append("api_key", this.apiKey);
     url.searchParams.append("format", "json");
@@ -43,7 +43,7 @@ export default class AxiosClient extends BaseClient {
       if (axios.isAxiosError(error) && error.response) {
         throw new RequestError(
           String(error.response.data),
-          error.response.status
+          error.response.status,
         );
       } else {
         throw error;
@@ -90,7 +90,7 @@ export default class AxiosClient extends BaseClient {
           if (progressEvent.loaded >= 500) {
             let speed = speedTracker.getCurrentSpeed(
               progressEvent.loaded,
-              progressEvent.total ?? 0
+              progressEvent.total ?? 0,
             );
             if (progressEvent.loaded === (progressEvent.total ?? 0)) {
               speed = speedTracker.getAverageSpeed();
@@ -99,7 +99,7 @@ export default class AxiosClient extends BaseClient {
               Math.floor((progressEvent.progress ?? 0) * 100),
               progressEvent.loaded,
               progressEvent.total ?? 0,
-              speed
+              speed,
             );
           }
         },
@@ -114,7 +114,7 @@ export default class AxiosClient extends BaseClient {
       if (axios.isAxiosError(error)) {
         errorToLog = new RequestError(
           error.message,
-          error.response?.status ?? 0
+          error.response?.status ?? 0,
         );
       } else if (error instanceof Error) {
         errorToLog = error;

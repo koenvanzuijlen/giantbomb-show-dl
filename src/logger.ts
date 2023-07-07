@@ -29,24 +29,24 @@ export default {
   videoSkipBeforeDate: (
     episodeName: string,
     publishDate: Dayjs,
-    fromDate: Dayjs
+    fromDate: Dayjs,
   ): void => {
     console.log(
       `\tSkipping ${cyan(episodeName)}, published on ${cyan(
-        publishDate.format("YYYY-MM-DD")
-      )} ${magenta(`(--from_date: ${fromDate.format("YYYY-MM-DD")})`)}`
+        publishDate.format("YYYY-MM-DD"),
+      )} ${magenta(`(--from_date: ${fromDate.format("YYYY-MM-DD")})`)}`,
     );
   },
 
   videoSkipAfterDate: (
     episodeName: string,
     publishDate: Dayjs,
-    toDate: Dayjs
+    toDate: Dayjs,
   ): void => {
     console.log(
       `\tSkipping ${cyan(episodeName)}, published on ${cyan(
-        publishDate.format("YYYY-MM-DD")
-      )} ${magenta(`(--to_date: ${toDate.format("YYYY-MM-DD")})`)}`
+        publishDate.format("YYYY-MM-DD"),
+      )} ${magenta(`(--to_date: ${toDate.format("YYYY-MM-DD")})`)}`,
     );
   },
 
@@ -57,8 +57,8 @@ export default {
   videoSkipNoURL: (episodeName: string, quality: string): void => {
     console.log(
       `\tSkipping ${cyan(episodeName)}, no URL found for quality ${magenta(
-        quality
-      )} or lower. Try with a higher quality.`
+        quality,
+      )} or lower. Try with a higher quality.`,
     );
   },
 
@@ -70,7 +70,7 @@ export default {
     percent: number,
     transferred: number,
     total: number,
-    speed: string
+    speed: string,
   ): void => {
     const tenthsDone = Math.floor(percent / 10);
     const color = percent === 100 ? green : yellow;
@@ -78,10 +78,10 @@ export default {
     readline.cursorTo(process.stdout, 0);
     process.stdout.write(
       `\t[${color("#".repeat(tenthsDone))}${" ".repeat(
-        10 - tenthsDone
+        10 - tenthsDone,
       )}] ${color(`${percent}%`)} (${magenta(
-        readableFilesize(transferred)
-      )} / ${magenta(readableFilesize(total))}) ${speed}`
+        readableFilesize(transferred),
+      )} / ${magenta(readableFilesize(total))}) ${speed}`,
     );
     readline.clearLine(process.stdout, 1);
   },
@@ -102,23 +102,25 @@ export default {
     console.log(
       `\tFound ${`${
         episodeCount ? magenta(episodeCount) : yellow("0")
-      } episodes`}!`
+      } episodes`}!`,
     );
   },
 
   showComplete: (showName: string, counts: DownloadCounter): void => {
     console.log(
-      green(`💣 ${cyan("giantbomb-show-dl")} is done for ${cyan(showName)}! 💣`)
+      green(
+        `💣 ${cyan("giantbomb-show-dl")} is done for ${cyan(showName)}! 💣`,
+      ),
     );
     if (counts.failed > 0) {
       console.error(
-        red(`${counts.failed} downloads failed! Re-run the command to retry.`)
+        red(`${counts.failed} downloads failed! Re-run the command to retry.`),
       );
     } else {
       console.log(
         `${green(counts.downloaded)} video(s) downloaded, ${yellow(
-          counts.skipped
-        )} video(s) skipped`
+          counts.skipped,
+        )} video(s) skipped`,
       );
     }
   },
@@ -136,18 +138,18 @@ export default {
       green(
         `💣 ${cyan("giantbomb-show-dl")} is done for ${
           videoCount > 0 ? magenta(videoCount) : yellow(videoCount)
-        } video(s)! 💣`
-      )
+        } video(s)! 💣`,
+      ),
     );
     if (counts.failed > 0) {
       console.error(
-        red(`${counts.failed} downloads failed! Re-run the command to retry.`)
+        red(`${counts.failed} downloads failed! Re-run the command to retry.`),
       );
     } else {
       console.log(
         `${green(counts.downloaded)} video(s) downloaded, ${yellow(
-          counts.skipped
-        )} video(s) skipped`
+          counts.skipped,
+        )} video(s) skipped`,
       );
     }
   },
@@ -173,17 +175,17 @@ export default {
    */
   interupt: (counts: DownloadCounter): void => {
     console.log(
-      green(`💣 ${cyan("giantbomb-show-dl")} run interupted, aborting 💣`)
+      green(`💣 ${cyan("giantbomb-show-dl")} run interupted, aborting 💣`),
     );
     if (counts.failed > 0) {
       console.error(
-        red(`${counts.failed} downloads failed! Re-run the command to retry.`)
+        red(`${counts.failed} downloads failed! Re-run the command to retry.`),
       );
     }
     console.log(
       `${green(counts.downloaded)} video(s) downloaded, ${yellow(
-        counts.skipped
-      )} video(s) skipped`
+        counts.skipped,
+      )} video(s) skipped`,
     );
   },
 
@@ -194,16 +196,16 @@ export default {
   errorModeSelection: (): void => {
     console.error(
       `${red("Error:")} Either ${magenta("--show")}, ${magenta(
-        "--video_id"
-      )} or ${magenta("--archive")} option should be passed`
+        "--video_id",
+      )} or ${magenta("--archive")} option should be passed`,
     );
   },
 
   errorOptionsMissing: (missingOptions: string[]): void => {
     console.error(
       `${red("Error:")} Required option(s) ${magenta(
-        missingOptions.map((option) => `--${option}`).join(", ")
-      )} not specified`
+        missingOptions.map((option) => `--${option}`).join(", "),
+      )} not specified`,
     );
   },
 
@@ -214,54 +216,54 @@ export default {
   errorInvalidQuality: (quality: string, allowedValues: string[]): void => {
     console.error(
       `${red("Error:")} Quality ${magenta(
-        quality
-      )} is not valid, options are ${cyan(allowedValues.join(", "))}`
+        quality,
+      )} is not valid, options are ${cyan(allowedValues.join(", "))}`,
     );
   },
 
   errorShowNotFound: (showName: string): void => {
     console.error(
       `${red("Error:")} Show ${cyan(
-        showName
-      )} not found, check if the name is correct`
+        showName,
+      )} not found, check if the name is correct`,
     );
   },
 
   errorShowCallFailed: (error: Error): void => {
     console.error(
       `\t${red("Error:")} Failed to retrieve show information: ${red(
-        error.message
-      )}`
+        error.message,
+      )}`,
     );
   },
 
   errorEpisodeCallFailed: (error: Error): void => {
     console.error(
       `\t${red("Error:")} Failed to retrieve episode information: ${red(
-        error.message
-      )}`
+        error.message,
+      )}`,
     );
   },
 
   errorVideoNotFound: (videoID: string): void => {
     console.error(
       `\t${red("Error:")} Video with ID ${cyan(
-        videoID
-      )} not found, check if the ID is correct`
+        videoID,
+      )} not found, check if the ID is correct`,
     );
   },
 
   errorVideoCallFailed: (error: Error): void => {
     console.error(
       `\t${red("Error:")} Failed to retrieve video information: ${red(
-        error.message
-      )}`
+        error.message,
+      )}`,
     );
   },
 
   errorVideosPageFailed: (error: Error): void => {
     console.error(
-      `\t${red("Error:")} Failed to videos page: ${red(error.message)}`
+      `\t${red("Error:")} Failed to videos page: ${red(error.message)}`,
     );
   },
 

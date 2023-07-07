@@ -54,7 +54,7 @@ export default class GiantBombAPI extends AxiosClient {
 
   private getDateFilterQuery(
     fromDate?: dayjs.Dayjs,
-    toDate?: dayjs.Dayjs
+    toDate?: dayjs.Dayjs,
   ): string {
     if (!fromDate && !toDate) {
       return "";
@@ -99,7 +99,7 @@ export default class GiantBombAPI extends AxiosClient {
           continue;
         }
         show = response.results.find(
-          (show) => show.title.toLowerCase() === showName.toLowerCase()
+          (show) => show.title.toLowerCase() === showName.toLowerCase(),
         );
         page++;
       }
@@ -114,7 +114,7 @@ export default class GiantBombAPI extends AxiosClient {
 
   async getShowVideos(
     show: Show,
-    { fromDate, toDate }: { fromDate?: dayjs.Dayjs; toDate?: dayjs.Dayjs }
+    { fromDate, toDate }: { fromDate?: dayjs.Dayjs; toDate?: dayjs.Dayjs },
   ): Promise<Video[] | null> {
     logger.episodeRetrieve(show.title);
     let page = 0;
@@ -171,7 +171,7 @@ export default class GiantBombAPI extends AxiosClient {
     try {
       const response = await this.request<VideoResponse>(
         `video/${videoId}`,
-        {}
+        {},
       );
       return response.results;
     } catch (error) {
