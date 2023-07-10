@@ -99,19 +99,24 @@ export default class AxiosClient extends BaseClient {
         onDownloadProgress: (progressEvent) => {
           // Minimum loaded to prevent showing logs for files that do not exist.
           if (progressEvent.loaded >= 500) {
-            let speed = speedTracker.getCurrentSpeed(
-              progressEvent.loaded,
-              progressEvent.total ?? 0,
-            );
-            if (progressEvent.loaded === (progressEvent.total ?? 0)) {
-              speed = speedTracker.getAverageSpeed();
+            let loaded = progressEvent.loaded;
+            let total = progressEvent.total ?? 0;
+            if (rangeStart >= 0) {
+              loaded += rangeStart;
+              total += rangeStart;
             }
-            logger.downloadProgress(
-              Math.floor((progressEvent.progress ?? 0) * 100),
-              progressEvent.loaded,
-              progressEvent.total ?? 0,
-              speed,
-            );
+            const percentage =
+              loaded > 0 ? Math.floor((loaded / total) * 100) : 0;
+
+            let speed = speedTracker.getCurrentSpeed(loaded, total);
+            if (loaded === total) {
+              speed = speedTracker.getAverageSpeed(
+                progressEvent.total && rangeStart >= 0
+                  ? progressEvent.total
+                  : 0,
+              );
+            }
+            logger.downloadProgress(percentage, loaded, total, speed);
           }
         },
       });

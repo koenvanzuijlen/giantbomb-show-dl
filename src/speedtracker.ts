@@ -69,7 +69,7 @@ export default class SpeedTracker {
     )} about ${chalk.magenta(readableTime(secondsLeft))} remaining`;
   }
 
-  getAverageSpeed(): string {
+  getAverageSpeed(remainingTotal: number): string {
     let bytesPerSecond = 0;
     let secondsDownloaded = 0;
 
@@ -87,8 +87,15 @@ export default class SpeedTracker {
       }
     }
 
+    let remainingMsg = "";
+    if (remainingTotal > 0) {
+      remainingMsg = ` for remaining ${chalk.magenta(
+        readableFilesize(remainingTotal),
+      )}`;
+    }
+
     return `avg. ${chalk.magenta(
       `${readableFilesize(bytesPerSecond)}/s`,
-    )} in ${chalk.magenta(readableTime(secondsDownloaded))}`;
+    )} in ${chalk.magenta(readableTime(secondsDownloaded))}${remainingMsg}`;
   }
 }

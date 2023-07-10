@@ -434,10 +434,11 @@ const downloadVideo = async (
     }
   }
 
-  // Retrieve already downloaed bytes
+  // Retrieve already downloaded bytes
   const filePath = path.join(videoDirectory, videoFilename);
   let currentFileBytes = -1;
   if (fs.existsSync(filePath)) {
+    logger.fileDownloadResume(videoFilename);
     currentFileBytes = fs.statSync(filePath).size;
   }
 

@@ -108,7 +108,7 @@ export default class FetchClient extends BaseClient {
             totalBytes,
           );
           if (transferredBytes === totalBytes) {
-            speed = speedTracker.getAverageSpeed();
+            speed = speedTracker.getAverageSpeed(0);
           }
           logger.downloadProgress(percent, transferredBytes, totalBytes, speed);
         } catch (error) {

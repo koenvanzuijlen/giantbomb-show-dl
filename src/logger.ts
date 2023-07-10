@@ -66,6 +66,10 @@ export default {
     console.log(`\tDownloading ${what} to: ${yellow(filename)}`);
   },
 
+  fileDownloadResume: (filename: string): void => {
+    console.log(`\tResuming partial download for ${yellow(filename)}`);
+  },
+
   downloadProgress: (
     percent: number,
     transferred: number,
