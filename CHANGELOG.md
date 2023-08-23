@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v2.3.1...v2.4.0) (2023-08-23)
+
+
+### Features
+
+* add request retries ([#31](https://github.com/koenvanzuijlen/giantbomb-show-dl/issues/31)) ([6af262a](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/6af262a4a6bd6327d4921ed9448b5857cee9fea6))
+
+
+### Bug Fixes
+
+* error on download urls with query parameters ([a07c75f](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/a07c75f244403a5adc8614f34c24c8a498252c00))
+
 ### [2.3.1](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v2.3.0...v2.3.1) (2023-07-10)
 
 
