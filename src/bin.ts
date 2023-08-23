@@ -51,6 +51,10 @@ const program = new Command()
     "highest",
   )
   .option(
+    "--retries <input>",
+    "Amount of times to retry a failed download, defaults to 2.",
+  )
+  .option(
     "--from_date <input>",
     "If added videos from before this date will not be downloaded. Formatted as YYYY-MM-DD.",
   )
@@ -119,6 +123,13 @@ const initProgram = (): void => {
     process.exit(1);
   }
 
+  // Check if the retries is valid
+  if (program.retries && isNaN(parseInt(program.retries))) {
+    logger.errorInvalidRetries(program.retries);
+    process.exit(1);
+  }
+  program.retries = program.retries ? parseInt(program.retries) : 2;
+
   // Set global variable with debugging status
   global.debug = program.debug ?? false;
 
@@ -138,7 +149,7 @@ const downloadShow = async (): Promise<void> => {
   const toDate = parseDate(program.to_date);
 
   // Retrieve show data
-  const show = await api.getShowInfo(program.show);
+  const show = await retryPromise(() => api.getShowInfo(program.show));
   if (!show) {
     process.exit(1);
   }
@@ -163,9 +174,8 @@ const downloadShow = async (): Promise<void> => {
     const imageTargetPath = path.join(directory, `image${imageExtension}`);
     if (!tracker.isDownloaded("show", "image")) {
       logger.fileDownload("show image", `image${imageExtension}`);
-      const success = await api.downloadFile(
-        show.image.original_url,
-        imageTargetPath,
+      const success = await retryPromise(() =>
+        api.downloadFile(show.image?.original_url as string, imageTargetPath),
       );
       if (success) {
         tracker.markDownloaded("show", "image", show.title);
@@ -179,9 +189,8 @@ const downloadShow = async (): Promise<void> => {
     const imageTargetPath = path.join(directory, `logo${imageExtension}`);
     if (!tracker.isDownloaded("show", "logo")) {
       logger.fileDownload("show logo", `logo${imageExtension}`);
-      const success = await api.downloadFile(
-        show.logo.original_url,
-        imageTargetPath,
+      const success = await retryPromise(() =>
+        api.downloadFile(show.logo?.original_url as string, imageTargetPath),
       );
       if (success) {
         tracker.markDownloaded("show", "logo", show.title);
@@ -195,8 +204,10 @@ const downloadShow = async (): Promise<void> => {
     mp3tag = new Mp3tag(directory);
   }
 
-  const videos = await api.getShowVideos(show, { fromDate, toDate });
-  if (videos === null) {
+  const videos = await retryPromise(() =>
+    api.getShowVideos(show, { fromDate, toDate }),
+  );
+  if (!Array.isArray(videos)) {
     process.exit(1);
   }
 
@@ -241,7 +252,7 @@ const downloadVideosById = async (): Promise<void> => {
   });
 
   for (const videoId of videoIds) {
-    const video = await api.getVideoById(videoId);
+    const video = await retryPromise(() => api.getVideoById(videoId));
     if (!video) {
       counts.failed++;
       continue;
@@ -278,8 +289,8 @@ const downloadArchive = async (): Promise<void> => {
   let videoCount = 0;
   while (foundVideos) {
     if (!tracker.isDownloaded(`archive_page_${page}`, "video")) {
-      const videos = await api.getAllVideosPage(page);
-      if (videos === null || videos.length === 0) {
+      const videos = await retryPromise(() => api.getAllVideosPage(page));
+      if (!Array.isArray(videos) || videos.length === 0) {
         foundVideos = false;
         continue;
       }
@@ -382,7 +393,9 @@ const downloadVideo = async (
     )}`;
     const imagePath = path.join(videoDirectory, imageFilename);
     logger.fileDownload("video image", imageFilename);
-    const success = await api.downloadFile(video.image.original_url, imagePath);
+    const success = await retryPromise(() =>
+      api.downloadFile(video.image?.original_url as string, imagePath),
+    );
     if (success) {
       tracker.markDownloaded(video.id, "image", filename);
     }
@@ -423,8 +436,9 @@ const downloadVideo = async (
         // Regex didn't replace anything
         continue;
       }
-      const maxQualityUrlExists = await api.checkIfExists(
-        possibleMaxQualityUrl,
+      const maxQualityUrlExists = await retryPromise(
+        () => api.checkIfExists(possibleMaxQualityUrl),
+        true,
       );
       if (maxQualityUrlExists) {
         logger.debug("Found 8k bitrate video, downloading that");
@@ -435,24 +449,48 @@ const downloadVideo = async (
   }
 
   // Retrieve already downloaded bytes
-  const filePath = path.join(videoDirectory, videoFilename);
-  let currentFileBytes = -1;
-  if (fs.existsSync(filePath)) {
-    logger.fileDownloadResume(videoFilename);
-    currentFileBytes = fs.statSync(filePath).size;
-  }
+  const success = await retryPromise(() => {
+    const filePath = path.join(videoDirectory, videoFilename);
+    let currentFileBytes = -1;
+    if (fs.existsSync(filePath)) {
+      logger.fileDownloadResume(videoFilename);
+      currentFileBytes = fs.statSync(filePath).size;
+    }
 
-  const success = await api.downloadFile(
-    urlToDownload,
-    filePath,
-    currentFileBytes,
-  );
+    return api.downloadFile(
+      urlToDownload as string,
+      filePath,
+      currentFileBytes,
+    );
+  });
+
   if (success) {
     counts.downloaded++;
     tracker.markDownloaded(video.id, "video", filename);
   } else {
     counts.failed++;
   }
+};
+
+const retryPromise = async <TResponse>(
+  promise: () => Promise<TResponse>,
+  supressLogs = false,
+): Promise<TResponse | false> => {
+  let attempt = 0;
+  while (attempt <= program.retries) {
+    attempt++;
+
+    try {
+      const result = await promise();
+      return result;
+    } catch (err) {
+      if (attempt <= program.retries && !supressLogs) {
+        logger.warningRetry(attempt, program.retries);
+      }
+    }
+  }
+
+  return false;
 };
 
 main();

@@ -63,9 +63,11 @@ export default class AxiosClient extends BaseClient {
         },
         timeout: REQUEST_TIMEOUT,
       });
+      console.dir(response.status);
       return response.status === 200;
     } catch (error) {
-      return false;
+      console.dir("ERROR");
+      throw new Error();
     }
   }
 
@@ -89,6 +91,7 @@ export default class AxiosClient extends BaseClient {
     }
 
     try {
+      throw new Error();
       const response = await axios.get(url, {
         headers,
         params: {
@@ -138,7 +141,7 @@ export default class AxiosClient extends BaseClient {
         errorToLog = new Error("Video download failed for unknown reason");
       }
       logger.errorDownloadFailed(errorToLog);
-      return false;
+      throw new Error();
     }
 
     process.stdout.write("\n");

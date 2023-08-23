@@ -225,6 +225,22 @@ export default {
     );
   },
 
+  errorInvalidRetries: (retries: string): void => {
+    console.error(
+      `${red("Error:")} Retries ${magenta(
+        retries,
+      )} is not valid, must be numeric`,
+    );
+  },
+
+  warningRetry: (attempt: number, totalAttempts: number): void => {
+    console.warn(
+      `\t${yellow("Warning:")} Request failed, retrying (${magenta(
+        attempt,
+      )} / ${magenta(totalAttempts)} retries)`,
+    );
+  },
+
   errorShowNotFound: (showName: string): void => {
     console.error(
       `${red("Error:")} Show ${cyan(

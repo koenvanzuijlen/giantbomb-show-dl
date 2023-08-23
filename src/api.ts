@@ -108,6 +108,7 @@ export default class GiantBombAPI extends AxiosClient {
       }
     } catch (error) {
       logger.errorShowCallFailed(error as Error);
+      throw new Error();
     }
     return show;
   }
@@ -115,7 +116,7 @@ export default class GiantBombAPI extends AxiosClient {
   async getShowVideos(
     show: Show,
     { fromDate, toDate }: { fromDate?: dayjs.Dayjs; toDate?: dayjs.Dayjs },
-  ): Promise<Video[] | null> {
+  ): Promise<Video[]> {
     logger.episodeRetrieve(show.title);
     let page = 0;
     let foundVideos = true;
@@ -143,14 +144,14 @@ export default class GiantBombAPI extends AxiosClient {
       }
     } catch (error) {
       logger.errorEpisodeCallFailed(error as Error);
-      return null;
+      throw new Error();
     }
 
     logger.episodeFound(videos.length);
     return videos;
   }
 
-  async getAllVideosPage(page: number): Promise<Video[] | null> {
+  async getAllVideosPage(page: number): Promise<Video[]> {
     logger.pageRetrieve(page);
 
     try {
@@ -161,7 +162,7 @@ export default class GiantBombAPI extends AxiosClient {
       return response.results;
     } catch (error) {
       logger.errorVideosPageFailed(error as Error);
-      return null;
+      throw new Error();
     }
   }
 
@@ -177,10 +178,11 @@ export default class GiantBombAPI extends AxiosClient {
     } catch (error) {
       if (error instanceof RequestError && error.statusCode === 404) {
         logger.errorVideoNotFound(videoId);
+        return null;
       } else {
         logger.errorVideoCallFailed(error as Error);
+        throw new Error();
       }
-      return null;
     }
   }
 }
