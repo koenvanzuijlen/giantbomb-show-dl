@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.4.1](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v2.4.0...v2.4.1) (2024-08-13)
+
+
+### Bug Fixes
+
+* upgrade dependencies ([4481c5a](https://github.com/koenvanzuijlen/giantbomb-show-dl/commit/4481c5ad9941dd9526b4f3b67ba2563a017fdba3))
+
 ## [2.4.0](https://github.com/koenvanzuijlen/giantbomb-show-dl/compare/v2.3.1...v2.4.0) (2023-08-23)
 
 
