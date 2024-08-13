@@ -1,6 +1,6 @@
 {
   "name": "giantbomb-show-dl",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Node CLI tool to download GiantBomb shows through the official API",
   "author": "Koen van Zuijlen",
   "license": "MIT",
@@ -17,39 +17,41 @@
     "node": ">= 18"
   },
   "volta": {
-    "node": "18.15.0",
-    "yarn": "1.22.19"
+    "node": "18.20.4",
+    "yarn": "1.22.22"
   },
   "scripts": {
     "build": "tsc --build",
     "watch": "tsc --watch",
     "prepack": "npm run build",
-    "postinstall": "husky install",
+    "postinstall": "husky",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
   },
   "dependencies": {
-    "axios": "1.4.0",
+    "axios": "1.7.3",
     "chalk": "5.3.0",
-    "commander": "11.0.0",
-    "dayjs": "1.11.9",
+    "commander": "12.1.0",
+    "dayjs": "1.11.12",
     "sanitize-filename": "1.6.3"
   },
   "devDependencies": {
-    "@commitlint/cli": "17.7.1",
-    "@commitlint/config-conventional": "17.7.0",
-    "@tsconfig/node18": "18.2.1",
+    "@commitlint/cli": "19.4.0",
+    "@commitlint/config-conventional": "19.2.2",
+    "@eslint/js": "9.9.0",
+    "@tsconfig/node18": "18.2.4",
     "@types/node": "^18",
-    "@typescript-eslint/eslint-plugin": "5.61.0",
-    "@typescript-eslint/parser": "5.61.0",
-    "eslint": "8.47.0",
-    "eslint-config-prettier": "9.0.0",
-    "husky": "8.0.3",
-    "lint-staged": "14.0.1",
+    "@typescript-eslint/eslint-plugin": "8.1.0",
+    "@typescript-eslint/parser": "8.1.0",
+    "eslint": "9.9.0",
+    "eslint-config-prettier": "9.1.0",
+    "husky": "9.1.4",
+    "lint-staged": "15.2.9",
     "pinst": "3.0.0",
-    "prettier": "3.0.2",
-    "typescript": "5.1.6",
-    "undici": "5.23.0"
+    "prettier": "3.3.3",
+    "typescript": "5.5.4",
+    "typescript-eslint": "8.1.0",
+    "undici": "6.19.7"
   },
   "packageManager": "yarn@3.6.2"
 }
