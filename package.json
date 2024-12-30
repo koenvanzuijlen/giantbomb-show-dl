@@ -29,7 +29,7 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
-    "axios": "1.7.3",
+    "axios": "1.7.4",
     "chalk": "5.3.0",
     "commander": "12.1.0",
     "dayjs": "1.11.12",
