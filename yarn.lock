@@ -1426,7 +1426,7 @@ __metadata:
     sanitize-filename: 1.6.3
     typescript: 5.7.2
     typescript-eslint: 8.18.2
-    undici: 6.19.7
+    undici: 6.21.1
   bin:
     giantbomb-show-dl: ./dist/bin.js
   languageName: unknown
@@ -2491,10 +2491,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:6.19.7":
-  version: 6.19.7
-  resolution: "undici@npm:6.19.7"
-  checksum: ccf7f311cc2f7109e03c433190cb13d45c581905a70674992b0d8469c36ec1ae011824f41ba0c4a85b9771e4dd30a94228315c316215f76fafcb8e3b91ffbc22
+"undici@npm:6.21.1":
+  version: 6.21.1
+  resolution: "undici@npm:6.21.1"
+  checksum: 2efc52f77224754a2efa7cb6459829f3c93c8321d17e76f574a904b353783d95073b6116f5b15637c4845d98c9dc5a019b809cb9d63b3529267e7727c49f6996
   languageName: node
   linkType: hard
 
